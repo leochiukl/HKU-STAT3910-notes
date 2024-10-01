@@ -1,0 +1,552 @@
+\section{Further Topics on Binomial Option Pricing Model}
+\label{sect:binom-model-further}
+\begin{enumerate}
+\item We have learnt the basics of binomial option pricing model in STAT3905.
+Here, we will investigate it in more details and study some further topics
+about it.
+\end{enumerate}
+\subsection{Dynamic Hedging}
+\begin{enumerate}
+\item In STAT3905, the main tool for pricing an option in a multi-period
+binomial tree is \emph{risk-neutral pricing}. Even in backward induction
+process, each step we are utilizing one-period risk-neutral pricing. Can we use
+the approach of \emph{pricing by replication}, just like the one-period
+binomial tree?
+
+\item It turns out that constructing a replicating portfolio in the
+multi-period binomial tree setting is more tricky, since such replicating
+portfolio is not ``static'' but ``dynamic'' --- we need to adjust its
+components depending on the market movements at the intermediate nodes. This
+way of construction is known as \defn{dynamic hedging}.
+
+\begin{center}
+\begin{tikzpicture}
+\node[] (s0) at (0,0) {\(S_0\)};
+\node[] (su) at (4,1) {\(S_u\)};
+\node[] (sd) at (4,-1) {\(S_d\)};
+\node[] (suu) at (8,2) {\(S_{uu}\)};
+\node[] (sud) at (8,0) {\(S_{ud}\)};
+\node[] (sdd) at (8,-2) {\(S_{dd}\)};
+\draw[-Latex, blue] (s0.east) -- (su.west);
+\draw[-Latex, blue] (s0.east) -- (sd.west);
+\draw[-Latex, violet] (su.east) -- (suu.west);
+\draw[-Latex, violet] (su.east) -- (sud.west);
+\draw[-Latex, orange] (sd.east) -- (sud.west);
+\draw[-Latex, orange] (sd.east) -- (sdd.west);
+\node[] () at (0,3) {Time 0};
+\node[] () at (4,3) {Time \(h\)};
+\node[] () at (8,3) {Time \(2h\)};
+\end{tikzpicture}
+\end{center}
+
+\item Recall the backward induction process, which looks like the following.
+\begin{center}
+\begin{tikzpicture}
+\node[] (s0) at (0,0) {\(S_0\)};
+\node[] (su) at (4,1) {\(S_u\)};
+\node[] (sd) at (4,-1) {\(S_d\)};
+\node[] (suu) at (8,2) {\(S_{uu}\)};
+\node[] (sud) at (8,0) {\(S_{ud}\)};
+\node[] (sdd) at (8,-2) {\(S_{dd}\)};
+\draw[-Latex, blue, opacity=0.2] (s0.east) -- (su.west);
+\draw[-Latex, blue, opacity=0.2] (s0.east) -- (sd.west);
+\draw[-Latex, violet] (su.east) -- (suu.west);
+\draw[-Latex, violet] (su.east) -- (sud.west);
+\draw[-Latex, orange, opacity=0.2] (sd.east) -- (sud.west);
+\draw[-Latex, orange, opacity=0.2] (sd.east) -- (sdd.west);
+\node[] () at (0,3) {Time 0};
+\node[] () at (4,3) {Time \(h\)};
+\node[] () at (8,3) {Time \(2h\)};
+
+\node[below = 1pt of suu, ForestGreen] (vuu) {\(V_{uu}\)};
+\node[below = 1pt of sud, ForestGreen] (vud) {\(V_{ud}\)};
+\node[below = 1pt of sdd, ForestGreen] (vdd) {\(V_{dd}\)};
+\node[below = 1pt of su, ForestGreen] (vu) {\(V_{u}\)\faIcon{check}};
+%\node[below = 1pt of sd, brown] {\(V_{d}\)};
+
+\draw[-Latex, dashed, brown] (vuu.west) to[bend right] (vu.north east);
+\draw[-Latex, dashed, brown] (vud.west) to[bend left] (vu.south east);
+\node[font=\huge, brown] () at (6,0.5) {\faIcon[regular]{arrow-alt-circle-left}};
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\node[] (s0) at (0,0) {\(S_0\)};
+\node[] (su) at (4,1) {\(S_u\)};
+\node[] (sd) at (4,-1) {\(S_d\)};
+\node[] (suu) at (8,2) {\(S_{uu}\)};
+\node[] (sud) at (8,0) {\(S_{ud}\)};
+\node[] (sdd) at (8,-2) {\(S_{dd}\)};
+\draw[-Latex, blue, opacity=0.2] (s0.east) -- (su.west);
+\draw[-Latex, blue, opacity=0.2] (s0.east) -- (sd.west);
+\draw[-Latex, violet, opacity=0.2] (su.east) -- (suu.west);
+\draw[-Latex, violet, opacity=0.2] (su.east) -- (sud.west);
+\draw[-Latex, orange] (sd.east) -- (sud.west);
+\draw[-Latex, orange] (sd.east) -- (sdd.west);
+\node[] () at (0,3) {Time 0};
+\node[] () at (4,3) {Time \(h\)};
+\node[] () at (8,3) {Time \(2h\)};
+
+\node[below = 1pt of suu, ForestGreen] (vuu) {\(V_{uu}\)};
+\node[below = 1pt of sud, ForestGreen] (vud) {\(V_{ud}\)};
+\node[below = 1pt of sdd, ForestGreen] (vdd) {\(V_{dd}\)};
+\node[below = 1pt of su, ForestGreen] (vu) {\(V_{u}\)};
+\node[below = 1pt of sd, ForestGreen] (vd) {\(V_{d}\)\faIcon{check}};
+%\node[below = 1pt of sd, brown] {\(V_{d}\)};
+
+\draw[-Latex, dashed, brown] (vdd.west) to[bend left] (vd.south east);
+\draw[-Latex, dashed, brown] (vud.west) to[bend right] (vd.north east);
+\node[font=\huge, brown] () at (6,-1.5) {\faIcon[regular]{arrow-alt-circle-left}};
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\node[] (s0) at (0,0) {\(S_0\)};
+\node[] (su) at (4,1) {\(S_u\)};
+\node[] (sd) at (4,-1) {\(S_d\)};
+\node[] (suu) at (8,2) {\(S_{uu}\)};
+\node[] (sud) at (8,0) {\(S_{ud}\)};
+\node[] (sdd) at (8,-2) {\(S_{dd}\)};
+\draw[-Latex, blue] (s0.east) -- (su.west);
+\draw[-Latex, blue] (s0.east) -- (sd.west);
+\draw[-Latex, violet, opacity=0.2] (su.east) -- (suu.west);
+\draw[-Latex, violet, opacity=0.2] (su.east) -- (sud.west);
+\draw[-Latex, orange, opacity=0.2] (sd.east) -- (sud.west);
+\draw[-Latex, orange, opacity=0.2] (sd.east) -- (sdd.west);
+\node[] () at (0,3) {Time 0};
+\node[] () at (4,3) {Time \(h\)};
+\node[] () at (8,3) {Time \(2h\)};
+
+\node[below = 1pt of suu, ForestGreen] (vuu) {\(V_{uu}\)};
+\node[below = 1pt of sud, ForestGreen] (vud) {\(V_{ud}\)};
+\node[below = 1pt of sdd, ForestGreen] (vdd) {\(V_{dd}\)};
+\node[below = 1pt of su, ForestGreen] (vu) {\(V_{u}\)};
+\node[below = 1pt of sd, ForestGreen] (vd) {\(V_{d}\)};
+\node[below = 1pt of s0, ForestGreen] (v0) {\(V_{0}\)\faIcon{check}};
+
+\draw[-Latex, dashed, brown] (vd.west) to[bend left] (v0.south east);
+\draw[-Latex, dashed, brown] (vu.west) to[bend right] (v0.north east);
+\node[font=\huge, brown] () at (2,-0.5) {\faIcon[regular]{arrow-alt-circle-left}};
+\end{tikzpicture}
+\end{center}
+
+\item Here, in each step of backward induction, we shall use the replicating
+portfolio approach instead of using the risk-neutral pricing formula. Through
+this, we can know how to construct a \emph{dynamic} replicating portfolio, and
+thus also know how to \emph{exploit arbitrage opportunities}, which is the main
+application of this dynamic hedging process.
+
+\item Let us start at the \(u\) node:
+\begin{center}
+\begin{tikzpicture}
+\node[] (s0) at (0,0) {\(S_0\)};
+\node[] (su) at (4,1) {\(S_u\)};
+\node[] (sd) at (4,-1) {\(S_d\)};
+\node[] (suu) at (8,2) {\(S_{uu}\)};
+\node[] (sud) at (8,0) {\(S_{ud}\)};
+\node[] (sdd) at (8,-2) {\(S_{dd}\)};
+\draw[-Latex, blue, opacity=0.2] (s0.east) -- (su.west);
+\draw[-Latex, blue, opacity=0.2] (s0.east) -- (sd.west);
+\draw[-Latex, violet] (su.east) -- (suu.west);
+\draw[-Latex, violet] (su.east) -- (sud.west);
+\draw[-Latex, orange, opacity=0.2] (sd.east) -- (sud.west);
+\draw[-Latex, orange, opacity=0.2] (sd.east) -- (sdd.west);
+\node[] () at (0,3) {Time 0};
+\node[] () at (4,3) {Time \(h\)};
+\node[] () at (8,3) {Time \(2h\)};
+
+\node[below = 1pt of suu, ForestGreen] (vuu) {\(V_{uu}\)};
+\node[below = 1pt of sud, ForestGreen] (vud) {\(V_{ud}\)};
+\node[below = 1pt of sdd, ForestGreen] (vdd) {\(V_{dd}\)};
+\node[below = 1pt of su, ForestGreen] (vu) {\(V_{u}\)\faIcon{check}};
+%\node[below = 1pt of sd, brown] {\(V_{d}\)};
+
+\draw[-Latex, dashed, brown] (vuu.west) to[bend right] (vu.north east);
+\draw[-Latex, dashed, brown] (vud.west) to[bend left] (vu.south east);
+\node[font=\huge, brown] () at (6,0.5) {\faIcon[regular]{arrow-alt-circle-left}};
+\end{tikzpicture}
+\end{center}
+We can use the standard formulas for finding out the replicating portfolio
+\emph{at \(u\) node}:
+\begin{align*}
+\Delta_u&=e^{-\delta h}\cdot \frac{V_{uu}-V_{ud}}{S_{uu}-S_{ud}},\\
+B_u&=e^{-rh}\cdot \frac{uV_{ud}-dV_{uu}}{u-d}.
+\end{align*}
+From this we know that the replicating portfolio at \(u\) node should be
+comprised of \(\Delta_{u}\) shares of stock and \(B_{u}\) in risk-free bond.
+Then of course we can carry out \emph{pricing by replication} and conclude that
+\[
+V_{u}=\Delta_{u}S_u+B_{u}.
+\]
+Here, we add a subscript \(u\) to signify that this replicating portfolio is
+for \(u\) node.
+
+At the same time point \(h\), if we are at \(d\) node instead of \(u\) node,
+the components of replicating portfolio would be different.
+\begin{center}
+\begin{tikzpicture}
+\node[] (s0) at (0,0) {\(S_0\)};
+\node[] (su) at (4,1) {\(S_u\)};
+\node[] (sd) at (4,-1) {\(S_d\)};
+\node[] (suu) at (8,2) {\(S_{uu}\)};
+\node[] (sud) at (8,0) {\(S_{ud}\)};
+\node[] (sdd) at (8,-2) {\(S_{dd}\)};
+\draw[-Latex, blue, opacity=0.2] (s0.east) -- (su.west);
+\draw[-Latex, blue, opacity=0.2] (s0.east) -- (sd.west);
+\draw[-Latex, violet, opacity=0.2] (su.east) -- (suu.west);
+\draw[-Latex, violet, opacity=0.2] (su.east) -- (sud.west);
+\draw[-Latex, orange] (sd.east) -- (sud.west);
+\draw[-Latex, orange] (sd.east) -- (sdd.west);
+\node[] () at (0,3) {Time 0};
+\node[] () at (4,3) {Time \(h\)};
+\node[] () at (8,3) {Time \(2h\)};
+
+\node[below = 1pt of suu, ForestGreen] (vuu) {\(V_{uu}\)};
+\node[below = 1pt of sud, ForestGreen] (vud) {\(V_{ud}\)};
+\node[below = 1pt of sdd, ForestGreen] (vdd) {\(V_{dd}\)};
+\node[below = 1pt of su, ForestGreen] (vu) {\(V_{u}\)};
+\node[below = 1pt of sd, ForestGreen] (vd) {\(V_{d}\)\faIcon{check}};
+%\node[below = 1pt of sd, brown] {\(V_{d}\)};
+
+\draw[-Latex, dashed, brown] (vdd.west) to[bend left] (vd.south east);
+\draw[-Latex, dashed, brown] (vud.west) to[bend right] (vd.north east);
+\node[font=\huge, brown] () at (6,-1.5) {\faIcon[regular]{arrow-alt-circle-left}};
+\end{tikzpicture}
+\end{center}
+In this case, applying the standard formulas again, we would have
+\begin{align*}
+\Delta_d&=e^{-\delta h}\cdot \frac{V_{ud}-V_{dd}}{S_{ud}-S_{dd}},\\
+B_d&=e^{-rh}\cdot \frac{uV_{dd}-dV_{ud}}{u-d}.
+\end{align*}
+As the input values in the formulas differ, the resulting replicating portfolio
+is generally different from that for \(u\) node. Nonetheless, we can again use
+pricing by replication to calculate \(V_d\):
+\[
+V_d=\Delta_{d}S_d+B_d.
+\]
+
+Having the values of \(V_u\) and \(V_d\), we can go to the initial node (time
+\(0\)) and construct a replicating portfolio there, using the standard formulas
+again:
+\begin{align*}
+\Delta_0&=e^{-\delta h}\cdot \frac{V_{u}-V_{d}}{S_{u}-S_{d}},\\
+B_0&=e^{-rh}\cdot \frac{uV_{d}-dV_{u}}{u-d}.
+\end{align*}
+Of course one can then calculate the time-0 value \(V_0\). But more
+importantly, this dynamic hedging approach gives us \emph{three} replicating
+portfolios to be constructed:
+\[
+(\Delta_0,B_0), (\Delta_u,B_u), (\Delta_d,B_d).
+\]
+How should we actually replicate the values/payoffs of the derivative using
+these three pairs of values?
+
+\item To actually perform the replication, we start with the replicating
+portfolio at the initial node: \((\Delta_0,B_0)\). By construction, when we
+have \(\Delta_0\) shares of stock and \(B_0\) in risk-free bond at time 0, the
+portfolio value would match with the value of the derivative for both \(u\) and
+\(d\) nodes, i.e., the portfolio value would be \(V_u\) at \(u\) node and
+\(V_d\) at \(d\) node. There is nothing special for this period.
+
+However, when we are at time \(h\), the above argument suggests that when we
+are at \(u\) or \(d\) node, the replicating portfolio should be
+\((\Delta_u,B_u)\) or \((\Delta_d,B_d)\) respectively. Generally,
+\emph{adjustments} are needed to \emph{rebalance} our existing portfolio
+(resulting from the time-0 replicating portfolio) into one of these, depending
+on which node we are at.
+
+More explicitly, the portfolio we have at time \(h\) before rebalancing is
+given by \((\Delta_0e^{\delta h},Be^{rh})\) due to the reinvestment of
+dividends and accumulation of interest.
+\begin{itemize}
+\item At \(u\) node, we need to change \((\Delta_0e^{\delta h},Be^{rh})\) to \((\Delta_u,B_u)\).
+\item At \(d\) node, we need to change \((\Delta_0e^{\delta h},Be^{rh})\) to \((\Delta_d,B_d)\).
+\end{itemize}
+To change the components, we need to buy/sell suitable shares of stocks and
+borrow/lend suitable amount of money. A natural question then arises: Do these
+transactions incur any cost/yield any gain?
+
+\item It turns out that these transactions must be costless, overall speaking. By construction of
+the initial replicating portfolio, we must have:
+\[
+\begin{cases}
+\Delta_0e^{\delta h}S_u+Be^{rh}=V_u,\\
+\Delta_0e^{\delta h}S_d+Be^{rh}=V_d.\\
+\end{cases}
+\]
+But on the other hand, pricing by replication at \(u\)
+and \(d\) nodes suggest that
+\[
+\begin{cases}
+\Delta_u S_u+B_u=V_u,\\
+\Delta_d S_d+B_d=V_d.\\
+\end{cases}
+\]
+Combining these two systems, this just means
+\[
+\begin{cases}
+\Delta_0e^{\delta h}S_u+Be^{rh}=\Delta_u S_u+B_u,\\
+\Delta_0e^{\delta h}S_d+Be^{rh}=\Delta_d S_d+B_d,\\
+\end{cases}
+\]
+i.e., the total portfolio value \emph{remains unchanged} after the rebalancing!
+This explains why those transactions must be costless, overall speaking.
+Due to this feature, sometimes the replicating portfolio here is said to be
+\defn{self-financing} as it can \emph{finance itself}.
+
+\item After performing the rebalancing at time \(h\), we can just hold the new
+replicating portfolio until time \(2h\), to match with the payoff of the
+derivative at time \(2h\).
+
+To summarize, in dynamic hedging, generally we need to perform rebalancing at
+intermediate nodes, so that we can replicate the payoff of derivative at
+\emph{every node}. After obtaining the ``dynamic'' replicating portfolio, we
+can use the usual buy-low-sell-high approach to exploit arbitrage opportunity
+(if exists). \begin{note}
+In this case, we need to be dynamic in the buy-low-sell-high approach. We may
+need to perform rebalancing at some intermediate time.
+\end{note}
+\end{enumerate}
+
+\subsection{Asian Options}
+\label{subsect:asian-option}
+\begin{enumerate}
+\item In STAT3905, we have only considered option which is
+\emph{path-independent} in the sense that its payoff depends only the
+underlying asset price at the time of expiration (for European option) or time
+of exercise (for American option). Here, using the binomial option pricing
+model, we will analyze \emph{path-dependent} options whose payoff depends also
+on intermediate underlying asset prices (``path''). We will consider two
+examples of path-dependent options: \emph{Asian option} (in
+\cref{subsect:asian-option}) and \emph{barrier option} (in
+\cref{subsect:barrier-option}).
+
+\item \defn{Asian option} is a path-dependent option whose payoff depends on a
+suitably defined \emph{average price} of the underlying asset over the life of
+the option.
+
+To be more specific, we start with a plain vanilla European call with strike
+price \(K\).\footnote{Here we focus on \emph{European} Asian option rather than
+\emph{American} Asian option.} Its payoff at time \(T\) (maturity) is
+\[
+(S_T-K)_{+}.
+\]
+After replacing either \(S_T\) or \(K\) by the ``average price'', we can
+incorporate path dependency in the payoff calculation.
+
+Here we have two ways to compute the ``average price'' based on the ``path''
+of the underlying asset prices. Given \(n=T/h\) asset prices
+\(S_h,S_{2h},\dotsc,S_{nh}\) in \(h\)-year interval, we have:
+\begin{enumerate}
+\item \defn{arithmetic average}:
+\[
+A_T=\frac{1}{n}\sum_{i=1}^{n}S_{ih}.
+\]
+\item \defn{geometric average}:
+\[
+G_T=\qty(\prod_{i=1}^{n}S_{ih})^{1/n}.
+\]
+\end{enumerate}
+The arithmetic average is more familiar to us and is the ``usual'' way of
+computing average. However, it turns out that using geometric average makes the
+option pricing more mathematically tractable, especially in the continuous-time
+\emph{Black-Scholes model} (in \cref{sect:bs-model}).
+
+\item After fixing a method for computing average, say geometric average, we
+can use \(G_T\) to replace either \(S_T\) or \(K\), and then the resulting
+payoff would respectively be
+\[
+(G_T-K)_{+}\qqtext{or}(S_T-G_T)_{+}.
+\]
+We get an Asian option in either case.
+
+In the former case, we call the resulting Asian option as \emph{\vc{geometric
+average} \blc{price} Asian \orc{call} option}:
+\begin{itemize}
+\item \vc{geometric average}: the way of computing average
+\item \blc{price}: the asset price \(S_T\) gets replaced
+\item \orc{call}: we start with a call option
+\end{itemize}
+There are 3 ``dimensions''.
+
+By the same logic, in the latter case, we call the resulting Asian option as
+\emph{geometric average strike Asian call option} (strike \faIcon{arrow-right}
+strike price \(K\) gets replaced).
+
+\item In a similar manner, we can get the payoff formulas for the other 6 kinds
+of Asian options (there are in total \(2\times 2\times 2=8\) kinds of Asian
+options). The payoff formulas for all 8 kinds of Asian option are summarized
+below.
+\begin{enumerate}[label={(\arabic*)}]
+\item arithmetic average price call: \((A_T-K)_{+}\)
+\item arithmetic average price put: \((K-A_T)_{+}\)
+\item arithmetic average strike call: \((S_T-A_T)_{+}\)
+\item arithmetic average strike put: \((A_T-S_T)_{+}\)
+\item geometric average price call: \((G_T-K)_{+}\)
+\item geometric average price put: \((K-G_T)_{+}\)
+\item geometric average strike call: \((S_T-G_T)_{+}\)
+\item geometric average strike put: \((G_T-S_T)_{+}\)
+\end{enumerate}
+\item After knowing the payoff structure of an Asian option, we start
+discussing how to \emph{price} an Asian option using the binomial option
+pricing model. It turns out that we can construct replicating portfolios in a
+similar manner as before and obtain an analogous \emph{risk-neutral pricing
+formula}. But there is some twist \warn{}: Due to the \emph{path-dependent}
+nature, different asset price paths that result in the \emph{same} terminal asset
+price may lead to \emph{different} payoffs for an Asian option!
+
+For example, the payoffs of an Asian option can be different for the following
+two paths, although they both lead to the same terminal asset price \(S_{ud}\).
+This is because the \emph{intermediate} asset price can differ, which
+influences the average calculation.
+\begin{center}
+\begin{tikzpicture}
+\node[] (s0) at (0,0) {\(S_0\)};
+\node[] (su) at (4,1) {\(S_u\)};
+\node[] (sd) at (4,-1) {\(S_d\)};
+\node[] (suu) at (8,2) {\(S_{uu}\)};
+\node[] (sud) at (8,0) {\(S_{ud}\)};
+\node[] (sdd) at (8,-2) {\(S_{dd}\)};
+\draw[-Latex, blue] (s0.east) -- (su.west);
+\draw[-Latex, blue, opacity=0.2] (s0.east) -- (sd.west);
+\draw[-Latex, violet, opacity=0.2] (su.east) -- (suu.west);
+\draw[-Latex, violet] (su.east) -- (sud.west);
+\draw[-Latex, orange, opacity=0.2] (sd.east) -- (sud.west);
+\draw[-Latex, orange, opacity=0.2] (sd.east) -- (sdd.west);
+\node[] () at (0,3) {Time 0};
+\node[] () at (4,3) {Time \(h\)};
+\node[] () at (8,3) {Time \(2h\)};
+\end{tikzpicture}
+\begin{tikzpicture}
+\node[] (s0) at (0,0) {\(S_0\)};
+\node[] (su) at (4,1) {\(S_u\)};
+\node[] (sd) at (4,-1) {\(S_d\)};
+\node[] (suu) at (8,2) {\(S_{uu}\)};
+\node[] (sud) at (8,0) {\(S_{ud}\)};
+\node[] (sdd) at (8,-2) {\(S_{dd}\)};
+\draw[-Latex, blue, opacity=0.2] (s0.east) -- (su.west);
+\draw[-Latex, blue] (s0.east) -- (sd.west);
+\draw[-Latex, violet, opacity=0.2] (su.east) -- (suu.west);
+\draw[-Latex, violet, opacity=0.2] (su.east) -- (sud.west);
+\draw[-Latex, orange] (sd.east) -- (sud.west);
+\draw[-Latex, orange, opacity=0.2] (sd.east) -- (sdd.west);
+\node[] () at (0,3) {Time 0};
+\node[] () at (4,3) {Time \(h\)};
+\node[] () at (8,3) {Time \(2h\)};
+\end{tikzpicture}
+\end{center}
+
+\item Therefore, although the risk-neutral pricing formula is most similar to
+before, we need to consider all the \(2^n\) asset price paths instead of just
+the \(n+1\) terminal asset prices, for an \(n\)-period binomial tree. We need
+to separately calculate the payoff for \emph{each} path, and multiply it by the
+corresponding risk-neutral probability for travelling \emph{in this specific
+path}.
+
+For example, the risk-neutral pricing formula in a two-period binomial tree
+takes the following form:
+\begin{align*}
+V_0&=e^{-rT}\sum_{\text{all \(2^2=4\) paths}}^{}\text{RN probability for travelling in that path}\times \text{payoff for that path}\\
+&=e^{-rT}[(p^{*})^{2}V_{uu}+p^{*}(1-p^{*})V_{ud}+(1-p^{*})p^{*}V_{du}+(1-p^{*})^{2}V_{dd}].
+\end{align*}
+\begin{remark}
+\item We need to consider the \(ud\) and \(du\) paths separately as
+\(V_{ud}\ne V_{du} \) in general.
+\item The RN probability for travelling in the \(ud\) path, i.e., ``up'' and
+then ``down'' \emph{in this order} (\underline{not} just one ``up'' and one
+``down''), is \(p^{*}(1-p^{*})\), \underline{not} \(2p^{*}(1-p^{*})\)! This is
+similar for the \(du\) path.
+\end{remark}
+\end{enumerate}
+\subsection{Barrier Options}
+\label{subsect:barrier-option}
+\begin{enumerate}
+\item A \defn{barrier option} is another path-dependent option whose payoff
+depends on whether the underlying asset price \emph{reaches} or \emph{hits} a
+specified level, called the \defn{barrier}, over the life of the option. 
+
+\item Like Asian option, a barrier option also has three dimensions:
+\begin{enumerate}[label={(\arabic*)}]
+\item \emph{``up'' or ``down'':} It refers to whether the asset price needs to
+go \emph{up} \faIcon{arrow-up} or \emph{down} \faIcon{arrow-down} from time 0
+to hit the barrier \(B\). In other words, it is an \defn{up} (\defn{down})
+option if the barrier \(B\) is higher (lower) than the current asset price
+\(S_0\).
+\item \emph{``in'' or ``out''}: The option can be either \emph{knocked-in} or
+\emph{knocked-out}. When the barrier is hit,
+\begin{itemize}
+\item \defn{knocked-in}: a plain vanilla European option \emph{comes into
+existence};
+\item \defn{knocked-out}: the original plain vanilla European option
+\emph{ceases to exist} and becomes worthless \faIcon{trash-alt}.
+\end{itemize}
+\begin{note}
+The underlying plain vanilla option is supposed to have a fixed expiration
+time, independent from the ``hitting time''.
+\end{note}
+\item \emph{``call'' or ``put''}: It refers to whether the underlying plain
+vanilla option is a call or put option.
+\end{enumerate}
+
+\item Comparing a barrier option and an otherwise identical plain vanilla
+option, we can observe that the barrier option \emph{never pays more} than the
+plain vanilla option. Hence, the barrier option must be no more expensive
+than the plain vanilla one. This makes barrier option as a more ``economic''
+alternative to the plain vanilla one.
+
+\item \label{it:barrier-option-payoff-fmlas} To be more precise, we can express payoff formula of a barrier option
+mathematically as follows. Consider a \(T\)-year \(K\)-strike underlying
+European call/put. Let \(\displaystyle M_T=\max_{t\in[0,T]}S_t\) and
+\(\displaystyle m_T=\min_{t\in[0,T]}S_t\) be the maximum and minimum asset
+prices in the path respectively.
+
+Then, the time-\(T\) payoffs of the 8 kinds of barrier option are given by:
+\begin{enumerate}[label={(\arabic*)}]
+\item up-and-in call: \((S_T-K)_{+}\indicset{M_T\ge B}\) \begin{note}
+\(M_T\ge B\) means that \(S_t\ge B\) for some time \(t\in[0,T]\)
+\faIcon{arrow-right} asset price has gone high enough to hit the barrier
+\faIcon{arrow-right} ``knocked-in''.
+\end{note}
+\item up-and-in put: \((K-S_T)_{+}\indicset{M_T\ge B}\)
+\item up-and-out call: \((S_T-K)_{+}\indicset{M_T<B}\) \begin{note}
+\(M_T<B\) means that \(S_t<B\) for \emph{any} time \(t\in [0,T]\)
+\faIcon{arrow-right} asset price has \emph{never} gone high enough to hit the
+barrier
+\faIcon{arrow-right} never ``knocked-out''
+\end{note}
+\item up-and-out put: \((K-S_T)_{+}\indicset{M_T<B}\)
+\item down-and-in call: \((S_T-K)_{+}\indicset{m_T\le B}\) \begin{note}
+\(m_T\le B\) means that \(S_t\le B\) for some time \(t\in[0,T]\)
+\faIcon{arrow-right} asset price has gone low enough to hit the barrier
+\faIcon{arrow-right} ``knocked-in''.
+\end{note}
+\item down-and-in put: \((K-S_T)_{+}\indicset{m_T\le B}\)
+\item down-and-out call: \((S_T-K)_{+}\indicset{m_T>B}\) \begin{note}
+\(m_T>B\) means that \(S_t>B\) for \emph{any} time \(t\in [0,T]\)
+\faIcon{arrow-right} asset price has \emph{never} gone low enough to hit the
+barrier
+\faIcon{arrow-right} never ``knocked-out''
+\end{note}
+\item down-and-out put: \((K-S_T)_{+}\indicset{m_T>B}\)
+\end{enumerate}
+\item \label{it:barrier-options-parity} A remarkable relationship between
+otherwise identical knocked-in and knocked-out barrier options is known as
+\emph{barrier options parity}:
+\[
+\text{knocked-in option price}+\text{knocked-out option price}
+=\text{plain vanilla option price}.
+\]
+\begin{pf}
+We can just check the payoff formulas for all 4 types of combinations of
+otherwise identical knocked-in and knocked-out options (up/down \& call/put).
+Here we only check the combination of up-and-in call and up-and-out call.
+Others can be checked similarly.
+
+In this case, according to \labelcref{it:barrier-option-payoff-fmlas}, the
+payoff of the combination of up-and-in call and up-and-out call is
+\[
+(S_T-K)_{+}\indicset{M_T\ge B}+(S_T-K)_{+}\indicset{M_T< B}
+=(S_T-K)_{+},
+\]
+which equals the payoff of the plain vanilla call. The parity then follows by
+\emph{law of one price}.
+\end{pf}
+\end{enumerate}
