@@ -7,3 +7,606 @@ Black-Scholes model involving the notion of \emph{Brownian motion}, something
 learnt in STAT3903. But it turns out that this is still not the ``real'' form.
 We will only cover it in full mathematical details in STAT3911.
 \end{enumerate}
+\subsection{Model Formulation}
+\begin{enumerate}
+\item\label{it:bs-model-formulation} In the \defn{Black-Scholes model} (or
+\defn{Black-Scholes framework}), we are assumed to be in a perfect market
+having the following two assets:
+\begin{itemize}
+\item a risky stock \faIcon{apple-alt} which pays dividend continuously
+at a dividend yield \(\delta\), where its time-\(t\) price is
+\[
+S_t=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma W_t],
+\]
+for some nonnegative parameters \(\alpha\) and \(\sigma\), and \(\{W_t\}\) is a
+standard Brownian motion or Wiener process;
+\begin{note}
+The stock prices form another stochastic process \(\{S_t\}\), which is called
+\defn{geometric Brownian motion}.
+\end{note}
+\item a risk-free zero-coupon bond \faIcon{file-invoice-dollar} with an
+annual continuously compounded risk-free rate \(r\).
+\end{itemize}
+Recall from STAT3903 that a \emph{Wiener process} \(\{W_t\}\) (\(t\ge 0\)) is
+defined by the following properties:
+\begin{enumerate}
+\item (starting at \(0\)) \(W_0=0\).
+\item (continuity) \(W_t\) is continuous function of time \(t\).
+\item (independent increments) Fix any \(n\) time points with
+\(0<t_1<t_2<\dotsb<t_n\). Then the increments
+\[
+W_{t_1}=W_{t_1}-\underbrace{W_0}_{0},\quad W_{t_2}-W_{t_1},\qqtext{...},\quad
+W_{t_n}-W_{t_{n-1}}
+\]
+over non-overlapping time intervals are independent random variables.
+\item (stationary increments) For any \(s\ge 0\) and any \(t\ge 0\),
+\(W_{s+t}-W_{s}\sim \ndist{0}{t}\), so the distribution depends only on the time
+length \(t\) and is free of \(s\).
+\end{enumerate}
+
+\item In this more general characterization of Black-Scholes model, the
+parameters \(\alpha\) and \(\sigma\) still carry the same meanings as before.
+
+Interpretations of \(\alpha\) and \(\sigma\):
+\begin{itemize}
+\item \(\alpha\) is the \emph{continuously compounded expected rate of return
+on the stock \faIcon{apple-alt}}:
+\begin{align*}
+\expv{S_t}&=\exp\qty[\ln S_0+\qty(\alpha-\delta-\frac{\sigma^2}{2})t]\expv{e^{\sigma W_t}}\\
+&=\exp\qty[\ln S_0+\qty(\alpha-\delta-\frac{\sigma^2}{2})t]\exp\qty(\frac{\sigma^2 t}{2})\\
+&=S_0e^{(\alpha-\delta)t}.
+\end{align*}
+\begin{note}
+By setting \(s=0\) in the stationary increment property, we know
+\(W_t=W_t-W_0\sim \ndist{0}{t}\). Now, recalling the formula of \emph{moment
+generating function} for normal distribution, we have
+\[
+\expv{e^{\sigma W_t}}=\exp\qty(\frac{\sigma^2 t}{2}).
+\]
+\end{note}
+
+This means
+\[
+\underbrace{S_0}_{\mathclap{\text{beginning value}}}e^{\alpha t}
+=\underbrace{e^{\delta t}\expv{S_t}}_{\text{expected ending value}}.
+\]
+\item \(\sigma\) is the \emph{volatility of the stock \faIcon{apple-alt}}:
+\[
+\vari{\ln\frac{S_t}{S_0}}
+=\vari{\text{non-random constant}+\sigma W_t}
+=\vari{\sigma W_t}
+=\sigma^2t.
+\]
+\end{itemize}
+\item Now, we shall show that the model studied in STAT3905 is indeed a special
+case of the one we study here. First fix any time interval \([s,s+t]\).  Then
+note that
+\[
+\ln\frac{S_{s+t}}{S_s}=\ln(\frac{S_{s+t}}{S_0}\cdot\frac{S_0}{S_s})
+=\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma(W_{s+t}-W_s).
+\]
+By the stationary increments property, we have \(W_{s+t}-W_{s}\sim \ndist{0}{t}\), so
+we indeed have
+\[
+\ln\frac{S_{s+t}}{S_s}\sim \ndist{\qty(\alpha-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t}.
+\]
+We can also express this in terms of log-normal distribution:
+\[
+\frac{S_{s+t}}{S_s}\sim \lndist{\qty(\alpha-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t}.
+\]
+
+To reduce this to the case for STAT3905, we can set \(s=0\), which yields
+\[
+\frac{S_{t}}{S_0}\sim \lndist{\qty(\alpha-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t},
+\]
+or
+\[
+S_t\sim \lndist{\ln S_0+\qty(\alpha-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t},
+\]
+which is the same as the one for STAT3905, from the perspective of marginal
+distribution.
+
+\item \label{it:bs-indpt-price-ratios}
+But the advantage of using the more general Black-Scholes model here is
+that we can also describe the relationship between different stock prices ---
+we can model the ``joint'' behaviour of stock prices. Consider \(n\) time
+points with \(0<t_1<t_2<\dotsb<t_n\). Then the stock price ratios
+\[
+\frac{S_{t_1}}{S_{0}},\quad\frac{S_{t_2}}{S_{t_1}},\qqtext{...},\quad\frac{S_{t_n}}{S_{t_{n-1}}}
+\]
+are functions of the independent increments \(W_{t_1}-W_0\), \(W_{t_2}-W_{t_1}\),
+..., \(W_{t_n}-W_{t_{n-1}}\). Thus, these stock price ratios over
+non-overlapping time intervals are independent also.
+\end{enumerate}
+\subsection{Probabilistic Quantities Under Black-Scholes Model}
+\begin{enumerate}
+\item Since the marginal distribution of the more general Black-Scholes model
+here is just the lognormal distribution we have studied in STAT3905, the
+formulas for probabilistic quantities introduced in STAT3905 are also
+applicable here:
+\begin{enumerate}
+\item\label{it:bs-ex-prob} \emph{(true) exercise probability:} (call)
+\(\prob{S_T>K}=\boxed{\Phi(\widehat{d_2})}\); (put)
+\(\prob{S_T<K}=\boxed{\Phi(-\widehat{d_2})}\), where
+\[
+\widehat{d_2}=\frac{\ln(S_0/K)+(\alpha-\delta-\sigma^2/2)T}{\sigma\sqrt{T}}.
+\]
+\item \label{it:bs-mean-var-stock-price} \emph{mean and variance of \(S_t\)
+(lognormal mean and variance formulas):}
+\(\expv{S_t}=\boxed{S_0e^{(\alpha-\delta)t}}\) and
+\(\vari{S_t}=\boxed{(\expv{S_t})^{2}(e^{\sigma^{2} t}-1)}\).
+\end{enumerate}
+
+\item Here we introduce several more probabilistic quantities. The first one is
+\emph{quantiles}. For the case of stock price \(S_t\) here, the \(p\)th
+quantile, or \(100p\)th percentile, of \(S_t\) is just the value of \(c\) that
+makes \(\prob{S_t\le c}=\alpha\). We shall denote it by
+\defn{\(\pi_{p}(S_t)\)}.
+
+\begin{note}
+In the financial or risk management context, the quantiles are also known as
+\emph{value at risk} (VaR).
+\end{note}
+
+\item \label{it:bs-stock-price-quantile-fmla} The formula for \(\pi_{p}(S_t)\)
+is given by
+\[
+\pi_{p}(S_t)=\boxed{S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t + \sigma\sqrt{t}\cdot \pi_{p}(Z)]}
+\]
+where \(\pi_{p}(Z)\) is the \(100p\)th percentile of a \emph{standard normal}
+random variable \(Z\).
+
+\begin{pf}
+We shall use without proof the following general result: If \(g\) is an
+\emph{increasing} continuous function applied to a random variable \(X\), then
+\(\pi_{p}(g(Y))=g(\pi_{p}(Y))\) --- We can ``interchange'' \(\pi_{p}\) and
+\(g\).
+
+First, note that for a Weiner process \(\{W_t\}_{t\ge 0}\), for any \(t\ge 0\),
+we can write \(W_t\eqd\sqrt{t}Z\) where \(Z\) is a standard normal random
+variable, since \(W_t\sim N(0,t)\). Thus, we have
+\[
+S_t\eqd S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma\sqrt{t}Z].
+\]
+With a fixed \(t\ge 0\), we define the function \(g\) by
+\[
+g(\vc{x})=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma\sqrt{t}\vc{x}],
+\]
+which is continuous and increasing. Then, applying the general result, we get
+\[
+\pi_p(S_t)=\pi_p(g(Z))=g(\pi_p(Z))=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t + \sigma\sqrt{t}\cdot \pi_{p}(Z)].
+\]
+\end{pf}
+\item Next we will consider quantities involving multiple stock prices at
+different time points. For these quantities, knowledge of \emph{marginal}
+distributions of stock prices is not enough. We need to know their \emph{joint}
+distribution. This is a place where the more general characterization of
+Black-Scholes model here is useful.
+
+\item Examples:
+\begin{enumerate}
+\item \emph{Probability involving multiple stock prices:} We write
+\begin{align*}
+\prob{S_1<S_2<S_3}
+&=\prob{S_1<S_2\text{ and }S_2<S_3} \\
+&=\prob{\frac{S_2}{S_1}>1\text{ and }\frac{S_3}{S_2}>1} \\
+&=\prob{\frac{S_2}{S_1}>1}\prob{\frac{S_3}{S_2}>1}&\text{(independent price ratios)}.
+\end{align*}
+Then we can carry out the remaining computations based on the property
+\[
+\frac{S_{s+t}}{S_s}\sim \lndist{\qty(\alpha-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t}.
+\]
+\item \emph{Geometric average of stock prices:} We write
+\begin{align*}
+G_3&=(S_1S_2S_3)^{1/3}\\
+&=S_0\exp[\qty(\alpha-\delta-\frac{1}{2}\sigma^2)\qty(\frac{1+2+3}{3})+\sigma\qty(\frac{W_1+W_2+W_3}{3})] \\
+&=S_0\exp[a+b(W_1+W_2+W_3)]
+\end{align*}
+where \(a\) and \(b\) are some constants. Then, we write
+\[
+W_1+W_2+W_3=3W_1+2(W_2-W_1)+(W_3-W_2).
+\]
+\begin{note}
+The idea for obtaining this expression is as follows.
+
+To apply the independent increment property of Weiner process, we first write
+\[
+W_1+W_2+W_3=aW_1+b(W_2-W_1)+c(W_3-W_2)
+\]
+and we would like to find the values of \(a\), \(b\), and \(c\). Comparing the
+coefficient of \(W_3\), we conclude that \(c=1\). Next, comparing the
+coefficient of \(W_2\) gives \(b=2\). Finally, comparing the coefficient of
+\(W_1\) gives \(a=3\).
+\end{note}
+
+Since \(W_1,W_2-W_1,W_3-W_2\iid\ndist{0}{1}\), we have
+\[
+W_1+W_2+W_3\sim\ndist{0}{(1^{2}+2^{2}+3^{2})(1)}\equiv\ndist{0}{14}.
+\]
+From this, we can calculate probabilistic quantities regarding \(G_3\).
+\end{enumerate}
+\end{enumerate}
+\subsection{Risk-Neutral Pricing}
+\begin{enumerate}
+\item After discussing the formulation of the Black-Scholes model, we would
+like to \emph{price} options under the Black-Scholes model, just like the case
+for binomial option pricing model. Similarly, we will utilize
+\emph{risk-neutral pricing}. Entering into the risk-neutral world provides us a
+convenient way to price options.
+
+\item The stock price formula in \labelcref{it:bs-model-formulation} describes
+the behaviour of stock prices in the \emph{real} world.
+\[
+S_t=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma W_t],\quad t\ge 0.
+\]
+\begin{itemize}
+\item The parameter \(\alpha\) describes the continuously compounded expected
+rate of return on the stock in the \emph{real} world. To compensate for the
+risk inherent to the stock, the return rate \(\alpha\) should be higher than
+the risk-free rate \(r\) usually.
+\item The stochastic process \(\{W_t\}\) is a Weiner process in the \emph{real}
+world.
+\end{itemize}
+\item Next, we want to enter into the \emph{risk-neutral} world. Before that,
+we do some preparatory work. First define another stochastic process
+\(\{\widetilde{W}_t\}\) by \[
+ \widetilde{W}_t=W_t+\frac{\alpha-r}{\sigma}t
+\]
+for any \(t\ge 0\). Then, we can write the stock price formula as:
+\begin{align*}
+S_t&=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma W_t] \\
+&=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma\qty(\widetilde{W}_t-\frac{\alpha-r}{\sigma}t)] \\
+&=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t-(\alpha-r)t+\sigma\widetilde{W}_t] \\
+&=S_0\exp\qty[\qty(\vc{r}-\delta-\frac{\sigma^2}{2})t+\sigma\vc{\widetilde{W}_t}].
+\end{align*}
+The final expression is very similar to the formula in \labelcref{it:bs-model-formulation}.
+The only changes are that \(\alpha\) becomes \(r\), and \(W_t\) becomes
+\(\widetilde{W}_t\).
+
+\item It turns out that the stochastic process \(\{\widetilde{W_t}\}\) is a Weiner
+process in the \emph{risk-neutral} world (not real world \warn{}). In the
+risk-neutral world, the \emph{risk-neutral probability measure} \(\Q\) is used
+for calculating probabilities, instead of the real-world probability measure
+\(\mathbb{P}\). To justify that the risk-neutral world we ``imagine'' here
+actually \emph{exists}\footnote{We can imagine many crazy things that do not
+exist at all...}, many mathematical technicalities are involved, and they are
+to be discussed in STAT3911. Here, we shall focus on the application of
+risk-neutral pricing rather than its proof.
+
+\item Consequently, in the risk-neutral world, the stock price process \(\{S_t\}\) is
+still a geometric Brownian motion like the real world, with just one change:
+The continuously compounded expected rate of return changes from \(\alpha\) to
+the risk-free rate \(r\). So, the risky stock also earns risk-free rate in the
+risk-neutral world, confirming that we are actually in the \emph{risk-neutral}
+world.
+
+Particularly, the distributions of stock price ratios and individual stock
+prices in the risk-neutral world, where the probability measure \(\Q\) is used,
+are given by
+\[
+\frac{S_{s+t}}{S_s}\overset{\mathrm{RN}}{\sim}\lndist{\qty(\vc{r}-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t}
+\]
+and
+\[
+S_t\overset{\mathrm{RN}}{\sim}\lndist{\ln S_0+\qty(\vc{r}-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t},
+\]
+for any \(s\ge 0\) and \(t\ge 0\).
+
+\item \label{it:bs-rn-pricing-fmla}
+Since every asset earns the risk-free rate \(r\) in the risk-neutral
+world, we can calculate the price of a European
+option/derivative\footnote{Pricing of American option/derivative under the
+Black-Scholes model is beyond the scope.} using the risk-neutral pricing
+formula, just like the case for binomial option pricing model: The current
+option price \(V_0\) is given by
+\[
+V_0=\boxed{e^{-rT}\expvq{\text{terminal payoff}}}.
+\]
+Although the form of this formula is the same as that in the binomial tree
+model, due to the great difference between the binomial tree model and
+Black-Scholes model, the computation of \(\expvq{\text{terminal payoff}}\)
+would be significantly different.
+
+\item To illustrate the usage of risk-neutral pricing formula under
+Black-Scholes model, we consider an example about pricing a \emph{power
+derivative} on the stock \faIcon{apple-alt} (under Black-Scholes model), whose
+payoff is \(V_T=S_T^{a}\) at the expiration time \(T\), where \(a\) is a fixed
+real number.
+
+Applying the risk-neutral pricing formula in \labelcref{it:bs-rn-pricing-fmla},
+the current price of the power derivative is
+\begin{align*}
+V_0&=e^{-rT}\expvq{S_T^{a}} \\
+&=e^{-rT}\expvq{\qty[S_0\exp(\qty(r-\delta-\frac{1}{2}\sigma^2)T+\sigma\widetilde{W}_T)]^{a}} \\
+&=e^{-rT}\expvq{S_0^{a}\exp(a\qty(r-\delta-\frac{1}{2}\sigma^2)T+a\sigma\widetilde{W}_T)} \\
+&=e^{-rT}S_0^{a}\exp[a\qty(r-\delta-\frac{1}{2}\sigma^2)T]M_{\widetilde{W}_T}(a\sigma)&\text{(\(M_{\widetilde{W}_T}\)
+denotes the mgf of \(\widetilde{W}_T\), under the risk-neutral world)}.
+\end{align*}
+Since \(\widetilde{W}_T\overset{\mathrm{RN}}{\sim}\ndist{0}{\orc{T}}\), we have
+\[
+M_{\widetilde{W}_T}(\blc{a\sigma})
+=\exp(\frac{\orc{T}(\blc{a\sigma})^{2}}{2}).
+\]
+It follows that
+\[
+V_0=e^{-rT}S_0^{a}\exp[a\qty(r-\delta-\frac{1}{2}\sigma^2)T]\exp(\frac{T(a\sigma)^{2}}{2})
+=\boxed{S_0^{a}\exp{[(a-1)r-a\delta]T+\frac{1}{2}a(a-1)\sigma^2T}}.
+\]
+Special cases:
+\begin{itemize}
+\item \(a=0\): The time-\(T\) payoff of the power derivative is just
+\(V_T=S_T^{0}=1\) always, so the power derivative is essentially a risk-free
+bond with\(\$1\) payable at time \(T\). Using the formula derived here, the
+current price is
+\[
+V_0=S_0^{0}\exp{[(0-1)r-0\delta]T+\frac{1}{2}0(0-1)\sigma^2T}
+=e^{-rT},
+\]
+as expected.
+\item \(a=1\): Then time-\(T\) payoff of the derivative is \(V_T=S_T\), the
+time-\(T\) stock price. In other words, the derivative delivers one unit of
+stock \faIcon{apple-alt} at time \(T\), and thus it can be treated as a prepaid
+forward on the stock \faIcon{apple-alt}. Using the formula above, we get
+\[
+V_0=S_0^{1}\exp{[(1-1)r-1\delta]T+\frac{1}{2}1(1-1)\sigma^2T}
+=S_0e^{-\delta T},
+\]
+which is precisely the prepaid forward price.
+\end{itemize}
+\end{enumerate}
+\subsection{The Black-Scholes Formula for European Call and Put}
+\begin{enumerate}
+\item By applying the risk-neutral pricing formula in
+\labelcref{it:bs-rn-pricing-fmla} to price European call and put, we can obtain
+the famous \emph{Black-Scholes formula}.
+
+\item \label{it:bs-call-fmla}
+ Consider a \(K\)-strike \(T\)-year European call on a stock \faIcon{apple-alt}
+with dividends payable continuously at the dividend yield \(\delta\) under the
+Black-Scholes model. Since the time-\(T\) payoff of the call is
+\((S_T-K)_{+}\), using the risk-neutral pricing formula in
+\labelcref{it:bs-rn-pricing-fmla} suggests that the current price of the call
+is
+\[
+C_0=e^{-rT}\expvq{(S_T-K)_{+}}.
+\]
+After some tedious algebra (see STAT3905 for more details), we get
+\[
+C_0=\boxed{S_0e^{-\delta T}\Phi(d_1)-Ke^{-rT}\Phi(d_2)}
+\]
+where \(\displaystyle
+d_1=\frac{\ln(S_0/K)+(r-\delta\blc{+}\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}\),
+\(\displaystyle
+d_2=d_1-\sigma\sqrt{T}=\frac{\ln(S_0/K)+(r-\delta\blc{-}\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}\),
+and \(\Phi(\cdot)\) denotes the standard normal cdf.
+
+\item \label{it:bs-pricing-fun}
+We can express the formula in \labelcref{it:bs-call-fmla} using the generic
+Black-Scholes type pricing function defined by:
+\[
+\bs{s_1,\delta_1}{s_2,\delta_2}{\sigma,T}=s_1e^{-\delta_1 T}\Phi(d_1)-s_2e^{-\delta_2 T}\Phi(d_2)
+\]
+where \(\displaystyle
+d_1=\frac{\ln(s_1/s_2)+(\delta_2-\delta_1\blc{+}\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}\)
+and \(\displaystyle d_2=d_1-\sigma\sqrt{T}\). The notations carry the following
+meanings:
+\begin{itemize}
+\item \(s_1\) is the current price of the asset \gc{gained} if the option is
+exercised, and \(\delta_1\) is the ``dividend yield'' (continuously compounded
+``growth rate'') of the asset.
+\item \(s_2\) is the current price of the asset \rc{lost} if the option is
+exercised, and \(\delta_2\) is the ``dividend yield'' of the asset.
+\item \(\sigma\) is the annualized volatility of the asset whose prices follow
+a geometric Brownian motion.
+\item \(T\) is the time to maturity of the option.
+\end{itemize}
+By plugging in suitable arguments into the generic ``\(\operatorname{BS}\)''
+function as suggested by the meanings above, it can be shown that
+\(\bs{s_1,\delta_1}{s_2,\delta_2}{\sigma,T}\) gives the correct time-0 option
+price.
+
+\begin{note}
+The time-\(t\) option price (\(0<t<T\)) is given by
+\(\bs{s_1,\delta_1}{s_2,\delta_2}{\sigma,T-t}\), by noting that the time to
+maturity becomes \(T-t\), at time \(t\).
+\end{note}
+
+\item Example: For the case of the call option, when it is exercised, the stock
+\faIcon{apple-alt} is \gc{gained} and the ``pile of cash''
+\faIcon{money-bill-wave} that worth the strike price is \rc{lost}. So:
+\begin{itemize}
+\item \(s_1\) should be the current price of the stock \faIcon{apple-alt}
+(\(S_0\)), and \(\delta_1\) should be the dividend yield of \faIcon{apple-alt}
+(\(\delta\)).
+\item \(s_2\) should be the current price of the ``pile of cash''
+\faIcon{money-bill-wave} (\(K\)), and \(\delta_2\) should be the ``dividend
+yield'' of \faIcon{money-bill-wave}: the continuously compounded ``growth
+rate'' of \faIcon{money-bill-wave}, namely the risk-free rate \(r\).
+\item \(\sigma\) is the annualized volatility of the stock \faIcon{apple-alt}.
+\end{itemize}
+Hence, we have
+\[
+C_0=\boxed{\bs{S_0,\delta}{K,r}{\sigma,T}},
+\]
+which coincides with the formula in \labelcref{it:bs-call-fmla}.
+
+\item For a \(K\)-strike \(T\)-year European put on \faIcon{apple-alt}, we can
+again apply the generic Black-Scholes pricing function to get its time-0 price:
+\[
+P_0=\boxed{\bs{K,r}{S_0,\delta}{\sigma,T}}
+=Ke^{-rT}\Phi(d_1^{P})-S_0e^{-\delta T}\Phi(d_2^{P}).
+\]
+Here we add a superscript ``\(P\)'' to each of \(d_1\) and \(d_2\) to emphasize
+that they are for the European put, and are \emph{different} from the \(d_1^C\)
+and \(d_2^C\) for the European call \warn{} (we also add the superscript \(C\)
+here for clarity). More specifically, they are given by
+\(\displaystyle
+d_1^{P}=\frac{\ln(K/S_0)+(\delta-r+\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}\) and
+\(d_2^{P}=d_1^{P}-\sigma\sqrt{T}\).
+
+In STAT3905, the formula for the time-0 put price is given by
+\[
+P_0=Ke^{-rT}\Phi(-d_2^{C})-S_0e^{-\delta T}\Phi(-d_1^{C}),
+\]
+which looks different from the expression above. However, we can show that
+\(-d_2^C=d_1^P\) and \(-d_1^C=d_2^P\), so these two expressions are actually
+equivalent.
+
+\begin{pf}
+Note that
+\[
+d_1^{P}=\frac{\ln(K/S_0)+(\delta-r\blc{+}\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}
+=-\frac{\ln(S_0/K)+(r-\delta\rc{-}\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}
+=-d_2^C,
+\]
+and
+\[
+d_2^{P}=\frac{\ln(K/S_0)+(\delta-r\rc{-}\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}
+=-\frac{\ln(S_0/K)+(r-\delta\blc{+}\frac{1}{2}\sigma^2)T}{\sigma\sqrt{T}}
+=-d_1^C.
+\]
+\end{pf}
+\item The Black-Scholes formula is not just limited to European call/put on
+stocks paying dividends continuously. We can also use it to price European
+option on some other kind of asset.
+
+\item The first kind of asset we consider here is \emph{currency}
+\faIcon{euro-sign}. We will use the Black-Scholes formula to price European
+option on currency \faIcon{euro-sign}, which are also known as \defn{currency
+option}.  The key idea is to treat currency as a ``special stock''. For a
+currency option, there are generally \emph{two} currencies involved:
+\begin{itemize}
+\item \defn{underlying currency}: the currency on which the
+option is written; the underlying asset for the option
+\item \defn{benchmark currency}: the currency on which value is
+measured/denominated
+\end{itemize}
+Suppose that the underlying currency is euro \faIcon{euro-sign} and the
+benchmark currency is dollar \faIcon{dollar-sign}. Let \(X_t\) denotes the
+time-\(t\) dollar/euro exchange rate, i.e., 1 euro can be exchanged for \(X_t\)
+dollars at time \(t\), vice versa. Symbolically, \(\EUR{1}=\$ X_t\).
+
+\item To price a \faIcon{dollar-sign}-denominated \(T\)-year \(\$K\)-strike European
+option on \EUR{1} under the Black-Scholes model, we assume that the exchange
+rate process \(\{X_t\}_{t\ge 0}\) is a geometric Brownian motion with constant
+volatility \(\sigma\) and ``dividend yield''
+\(r_{\mathrm{underlying}}=r_{\euro}\) (risk-free rate for the underlying
+currency: euro). Also, the ``risk-free rate \(r\)'' in this case is the
+risk-free rate for the \emph{benchmark} currency (dollar), denoted by
+\(r_{\mathrm{benchmark}}=r_{\$}\). Thus, considering the risk-neutral world, we
+can write
+\[
+X_t=X_0\exp[\qty(r_{\mathrm{benchmark}}-r_{\mathrm{underlying}}-\frac{\sigma^2}{2})t+\sigma\widetilde{W}_t]
+\]
+for any \(t\ge 0\). From this, we can then associate the notations here with
+the ones for stock option as follows:
+\begin{center}
+\begin{tabular}{cc}
+\toprule
+Currency option&Stock option\\
+\midrule
+\(X_t\)&\(S_t\)\\
+\(r_{\mathrm{benchmark}}\)&\(r\)\\
+\(r_{\mathrm{underlying}}\)&\(\delta\)\\
+\(\sigma\) (for exchange rates) &\(\sigma\) (for stock price)\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\item Hence, the current prices of \faIcon{dollar-sign}-denominated \(T\)-year
+\(\$K\)-strike European call and put on \EUR{1} are respectively
+\[
+C_0=\boxed{\bs{X_0,r_{\mathrm{underlying}}}{K,r_{\mathrm{benchmark}}}{\sigma,T}}
+\]
+and
+\[
+P_0=\boxed{\bs{K,r_{\mathrm{benchmark}}}{X_0,r_{\mathrm{underlying}}}{\sigma,T}}.
+\]
+\item The second kind of asset to be considered is \emph{stock paying discrete
+dividends}. The underlying stocks we have dealt with so far pay continuous
+proportional dividends at a dividend yield \(\delta\). What if the stock pays
+discrete dividends instead? Here we shall consider the case where both the
+amount and timing of the discrete dividend payments are known.
+
+\item Consider a stock that pays dividend \(D_{t_i}\) at time \(t_i\), for
+every \(i=1,\dotsc,n\), where \(0<t_1<\dotsb<t_n<T\). The time \(T\) is the
+time to maturity of a European option on such stock.
+
+The following shows an example of stock price path for a stock with discrete
+dividend payable at time 2:
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[domain=0:5, axis y line=left, axis x line=middle, ymin=-0.1, ymax=1.8, title=Stock price path, xmax=5.5,
+xlabel=\(t\), ylabel=\(S_t\)]
+\addplot[blue, domain=0:2]{e^x*sin(1/(x-1))+1};
+\addplot[blue, domain=2:5]{e^x*sin(1/(x-1))+0.7};
+\draw[blue] (2,1.13) circle [radius=0.5mm];
+\draw[blue, fill] (2,0.83) circle [radius=0.5mm];
+\draw[pen colour=orange, very thick, decorate,decoration={calligraphic brace, amplitude=5pt, raise=0}] (2,1.13) -- (2,0.83)
+node[midway, right=1.5mm]{\(D_2\)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+Due to the no-arbitrage principle, the stock price jumps downward immediately
+at each dividend payment time, by the amount of the dividend at that time. This
+makes the stock price path \emph{discontinuous}. If the stock price process was
+a geometric Brownian motion, the continuity of the sample path for the
+underlying Weiner process would imply the continuity of the stock price path as
+well. Hence, this suggests that the stock price process \(\{S_t\}_{t\ge 0}\)
+cannot possibly be a geometric Brownian motion. So how should we apply the
+Black-Scholes model to price a \(T\)-year \(K\)-strike option written on such
+stock?
+
+\item The key idea is to consider the \emph{prepaid forward price} instead.
+From STAT3905, the time-\(t\) price of a prepaid forward for one share of stock to be
+delivered at time \(T\) (\(\ge t\)) is
+\[
+F_{t,T}^{P}(S)=S_t-\operatorname{PV}_{t}(\text{dividends})
+=S_t-\sum_{i:t_i\ge t}^{}D_{t_i}e^{-r(t_i-t)}.
+\]
+Although the stock price \(S_{t_i}\) has a downward jump at each dividend
+payment time \(t_i\), the corresponding present value
+\(\operatorname{PV}_{t_i}(\text{dividends})\) drops by the same amount. This
+ensures that the prepaid forward price \(F_{t,T}^{P}(S)\) is a continuous
+function of time \(t\). Therefore, we can assume that the prepaid forward price
+process \(\{F_{t,T}^{P}(S)\}_{t\in[0,T]}\) is a geometric Brownian motion, and
+then the option pricing can be proceeded, utilizing this assumption.
+
+\item Since there is no dividend payable at or after time \(T\), the time-\(T\)
+prepaid forward price is the same as the time-\(T\) stock price, i.e.,
+\(F_{T,T}^{P}(S)=S_T\). Then, by the risk-neutral pricing formula in
+\labelcref{it:bs-rn-pricing-fmla}, the current price of the European call on
+the stock is
+\[
+C_0=e^{-rT}\expvq{(\blc{S_T}-K)_{+}}
+=e^{-rT}\expvq{(\blc{F_{T,T}^{P}(S)}-K)_{+}}.
+\]
+From this, we can see that such European call can also be viewed as the
+otherwise identical European call on the \emph{prepaid forward} on the stock,
+also maturing at time \(T\), for option pricing purpose.
+
+\item \label{it:bs-fmla-stock-disc-div}
+With the assumption that \(\{F_{t,T}^{P}(S)\}_{t\in[0,T]}\) is a
+geometric Brownian motion, we can use the generic Black-Scholes pricing
+function to price such European call, with the following arguments:
+\begin{itemize}
+\item \(s_1=F_{0,T}^{P}(S)\): the time-0 price of the asset gained by
+exercising the call, namely the prepaid forward maturing at time \(T\).
+\item \(\delta=0\): the prepaid forward itself \faIcon{scroll} does not pay any
+dividend.
+\item \(\sigma\): the volatility of the \emph{prepaid forward}. That is, we
+have
+\[
+\vari{\ln F_{t,T}^{P}(S)}=\sigma^2 t
+\]
+for any \(0\le t\le T\).
+\end{itemize}
+The current price of the European call is thus
+\[
+C_0=\boxed{\bs{F_{0,T}^{P}(S),0}{K,r}{\sigma,T}}.
+\]
+Similarly, the current price of the otherwise identical European \emph{put} is
+\[
+P_0=\boxed{\bs{K,r}{F_{0,T}^{P}(S),0}{\sigma,T}}.
+\]
+\end{enumerate}

@@ -18,6 +18,7 @@
 \usepackage{stackengine}
 \usepackage{xfp}
 \usepackage{tablefootnote}
+\usepackage[gen]{eurosym}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
@@ -49,7 +50,10 @@
 \newcommand*{\Q}{\mathbb{Q}}
 \newcommand*{\warn}{\textcolor{red}{\faIcon{exclamation-triangle}}}
 \newcommand*{\expvq}[1]{\mathbb{E}_{\mathbb{Q}}\qty[#1]}
-\newcommand*{\bs}[2]{\operatorname{BS}\qty(#1;#2;\sigma,T)}
+\newcommand*{\bs}[3]{\operatorname{BS}\qty(#1;#2;#3)}
+\newcommand*{\ndist}[2]{\operatorname{N}\qty(#1,#2)}
+\newcommand*{\lndist}[2]{\operatorname{LN}\qty(#1,#2)}
+\newcommand*{\iid}{\overset{\mathrm{iid}}{\sim}}
 
 \newcommand{\vc}[1]{{\color{violet}#1}}
 \newcommand{\blc}[1]{{\color{blue}#1}}
@@ -57,6 +61,7 @@
 \newcommand{\orc}[1]{{\color{orange}#1}}
 \newcommand{\mgc}[1]{{\color{magenta}#1}}
 \newcommand{\rc}[1]{{\color{red}#1}}
+\newcommand{\gc}[1]{{\color{green!50!black}#1}}
 
 \newenvironment{remark}{\sffamily \underline{Remarks}:\begin{itemize}}{\end{itemize}}
 \newenvironment{note}{\sffamily\lbrack Note:}{\!\!\rbrack}
