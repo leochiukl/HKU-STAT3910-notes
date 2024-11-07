@@ -8,7 +8,7 @@ about it.
 \subsection{Dynamic Hedging}
 \begin{enumerate}
 \item In STAT3905, the main tool for pricing an option in a multi-period
-binomial tree is \emph{risk-neutral pricing}. Even in backward induction
+binomial tree is \emph{risk-neutral pricing}. Even in the backward induction
 process, each step we are utilizing one-period risk-neutral pricing. Can we use
 the approach of \emph{pricing by replication}, just like the one-period
 binomial tree?
@@ -128,11 +128,11 @@ way of construction is known as \defn{dynamic hedging}.
 \end{tikzpicture}
 \end{center}
 
-\item Here, in each step of backward induction, we shall use the replicating
-portfolio approach instead of using the risk-neutral pricing formula. Through
-this, we can know how to construct a \emph{dynamic} replicating portfolio, and
-thus also know how to \emph{exploit arbitrage opportunities}, which is the main
-application of this dynamic hedging process.
+\item Here, in each step of the backward induction, we shall use the
+replicating portfolio approach instead of using the risk-neutral pricing
+formula. Through this, we can know how to construct a \emph{dynamic}
+replicating portfolio, and thus also know how to \emph{exploit arbitrage
+opportunities}, which is the main application of this dynamic hedging process.
 
 \item Let us start at the \(u\) node:
 \begin{center}
@@ -273,7 +273,7 @@ the initial replicating portfolio, we must have:
 \end{cases}
 \]
 But on the other hand, pricing by replication at \(u\)
-and \(d\) nodes suggest that
+and \(d\) nodes suggests that
 \[
 \begin{cases}
 \Delta_u S_u+B_u=V_u,\\
@@ -288,8 +288,8 @@ Combining these two systems, this just means
 \end{cases}
 \]
 i.e., the total portfolio value \emph{remains unchanged} after the rebalancing!
-This explains why those transactions must be costless, overall speaking.
-Due to this feature, sometimes the replicating portfolio here is said to be
+This explains why those transactions must be overall costless.  Due to this
+feature, sometimes the replicating portfolio here is said to be
 \defn{self-financing} as it can \emph{finance itself}.
 
 \item After performing the rebalancing at time \(h\), we can just hold the new
@@ -316,8 +316,8 @@ of exercise (for American option). Here, using the binomial option pricing
 model, we will analyze \emph{path-dependent} options whose payoff depends also
 on intermediate underlying asset prices (``path''). We will consider two
 examples of path-dependent options: \emph{Asian option} (in
-\cref{subsect:asian-option}) and \emph{barrier option} (in
-\cref{subsect:barrier-option}).
+\Cref{subsect:asian-option}) and \emph{barrier option} (in
+\Cref{subsect:barrier-option}).
 
 \item \defn{Asian option} is a path-dependent option whose payoff depends on a
 suitably defined \emph{average price} of the underlying asset over the life of
@@ -348,7 +348,7 @@ G_T=\qty(\prod_{i=1}^{n}S_{ih})^{1/n}.
 The arithmetic average is more familiar to us and is the ``usual'' way of
 computing average. However, it turns out that using geometric average makes the
 option pricing more mathematically tractable, especially in the continuous-time
-\emph{Black-Scholes model} (in \cref{sect:bs-model}).
+\emph{Black-Scholes model} (in \Cref{sect:bs-model}).
 
 \item After fixing a method for computing average, say geometric average, we
 can use \(G_T\) to replace either \(S_T\) or \(K\), and then the resulting
@@ -467,10 +467,10 @@ specified level, called the \defn{barrier}, over the life of the option.
 \begin{enumerate}[label={(\arabic*)}]
 \item \emph{``up'' or ``down'':} It refers to whether the asset price needs to
 go \emph{up} \faIcon{arrow-up} or \emph{down} \faIcon{arrow-down} from time 0
-to hit the barrier \(B\). In other words, it is an \defn{up} (\defn{down})
-option if the barrier \(B\) is higher (lower) than the current asset price
+to hit the barrier \(B\). In other words, it is an \defn{up option} (\defn{down option})
+if the barrier \(B\) is higher (lower) than the current asset price
 \(S_0\).
-\item \emph{``in'' or ``out''}: The option can be either \emph{knocked-in} or
+\item \emph{``in'' or ``out'':} The option can be either \emph{knocked-in} or
 \emph{knocked-out}. When the barrier is hit,
 \begin{itemize}
 \item \defn{knocked-in}: a plain vanilla European option \emph{comes into
@@ -482,7 +482,7 @@ existence};
 The underlying plain vanilla option is supposed to have a fixed expiration
 time, independent from the ``hitting time''.
 \end{note}
-\item \emph{``call'' or ``put''}: It refers to whether the underlying plain
+\item \emph{``call'' or ``put'':} It refers to whether the underlying plain
 vanilla option is a call or put option.
 \end{enumerate}
 

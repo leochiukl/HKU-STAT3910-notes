@@ -4,8 +4,8 @@
 \item In STAT3905, we have studied Black-Scholes model. It will be studied
 again in STAT3910, but in more details. We will consider a more general form of
 Black-Scholes model involving the notion of \emph{Brownian motion}, something
-learnt in STAT3903. But it turns out that this is still not the ``real'' form.
-We will only cover it in full mathematical details in STAT3911.
+we have learnt in STAT3903. But it turns out that this is still not the
+``real'' form.  We will only cover it in full mathematical details in STAT3911.
 \end{enumerate}
 \subsection{Model Formulation}
 \begin{enumerate}
@@ -141,7 +141,7 @@ applicable here:
 \emph{quantiles}. For the case of stock price \(S_t\) here, the \(p\)th
 quantile, or \(100p\)th percentile, of \(S_t\) is just the value of \(c\) that
 makes \(\prob{S_t\le c}=\alpha\). We shall denote it by
-\defn{\(\pi_{p}(S_t)\)}.
+\(\pi_{p}(S_t)\).
 
 \begin{note}
 In the financial or risk management context, the quantiles are also known as
@@ -242,8 +242,8 @@ S_t=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma W_t],\quad t\ge 0
 \begin{itemize}
 \item The parameter \(\alpha\) describes the continuously compounded expected
 rate of return on the stock in the \emph{real} world. To compensate for the
-risk inherent to the stock, the return rate \(\alpha\) should be higher than
-the risk-free rate \(r\) usually.
+risk inherent to the stock, the return rate \(\alpha\) is usually higher than
+the risk-free rate \(r\).
 \item The stochastic process \(\{W_t\}\) is a Weiner process in the \emph{real}
 world.
 \end{itemize}
@@ -267,18 +267,18 @@ The only changes are that \(\alpha\) becomes \(r\), and \(W_t\) becomes
 process in the \emph{risk-neutral} world (not real world \warn{}). In the
 risk-neutral world, the \emph{risk-neutral probability measure} \(\Q\) is used
 for calculating probabilities, instead of the real-world probability measure
-\(\mathbb{P}\). To justify that the risk-neutral world we ``imagine'' here
-actually \emph{exists}\footnote{We can imagine many crazy things that do not
+\(\mathbb{P}\). To justify that such risk-neutral world we ``imagine'' here
+actually \emph{exists}\footnote{We can ``imagine'' many crazy things that do not
 exist at all...}, many mathematical technicalities are involved, and they are
 to be discussed in STAT3911. Here, we shall focus on the application of
 risk-neutral pricing rather than its proof.
 
-\item Consequently, in the risk-neutral world, the stock price process \(\{S_t\}\) is
-still a geometric Brownian motion like the real world, with just one change:
-The continuously compounded expected rate of return changes from \(\alpha\) to
-the risk-free rate \(r\). So, the risky stock also earns risk-free rate in the
-risk-neutral world, confirming that we are actually in the \emph{risk-neutral}
-world.
+\item Consequently, in the risk-neutral world, the stock price process
+\(\{S_t\}\) is still a geometric Brownian motion like the real world, with just
+one change: The continuously compounded expected rate of return changes from
+\(\alpha\) to the risk-free rate \(r\). So, the risky stock also earns
+risk-free rate in this world, confirming that we are actually in the
+\emph{risk-neutral} world.
 
 Particularly, the distributions of stock price ratios and individual stock
 prices in the risk-neutral world, where the probability measure \(\Q\) is used,
@@ -336,7 +336,7 @@ Special cases:
 \begin{itemize}
 \item \(a=0\): The time-\(T\) payoff of the power derivative is just
 \(V_T=S_T^{0}=1\) always, so the power derivative is essentially a risk-free
-bond with\(\$1\) payable at time \(T\). Using the formula derived here, the
+bond with \(\$1\) payable at time \(T\). Using the formula derived here, the
 current price is
 \[
 V_0=S_0^{0}\exp{[(0-1)r-0\delta]T+\frac{1}{2}0(0-1)\sigma^2T}
@@ -351,7 +351,8 @@ forward on the stock \faIcon{apple-alt}. Using the formula above, we get
 V_0=S_0^{1}\exp{[(1-1)r-1\delta]T+\frac{1}{2}1(1-1)\sigma^2T}
 =S_0e^{-\delta T},
 \]
-which is precisely the prepaid forward price.
+which is precisely the current price of the \(T\)-year prepaid forward on the
+stock.
 \end{itemize}
 \end{enumerate}
 \subsection{The Black-Scholes Formula for European Call and Put}
@@ -381,7 +382,7 @@ d_2=d_1-\sigma\sqrt{T}=\frac{\ln(S_0/K)+(r-\delta\blc{-}\frac{1}{2}\sigma^2)T}{\
 and \(\Phi(\cdot)\) denotes the standard normal cdf.
 
 \item \label{it:bs-pricing-fun}
-We can express the formula in \labelcref{it:bs-call-fmla} using the generic
+We can express the formula in \labelcref{it:bs-call-fmla} using a generic
 Black-Scholes type pricing function defined by:
 \[
 \bs{s_1,\delta_1}{s_2,\delta_2}{\sigma,T}=s_1e^{-\delta_1 T}\Phi(d_1)-s_2e^{-\delta_2 T}\Phi(d_2)
@@ -403,12 +404,12 @@ a geometric Brownian motion.
 By plugging in suitable arguments into the generic ``\(\operatorname{BS}\)''
 function as suggested by the meanings above, it can be shown that
 \(\bs{s_1,\delta_1}{s_2,\delta_2}{\sigma,T}\) gives the correct time-0 option
-price.
+price. (See \Cref{subsect:exchange-opt} for more details.)
 
 \begin{note}
 The time-\(t\) option price (\(0<t<T\)) is given by
 \(\bs{s_1,\delta_1}{s_2,\delta_2}{\sigma,T-t}\), by noting that the time to
-maturity becomes \(T-t\), at time \(t\).
+maturity becomes \(T-t\), at time \(t\). Furthermore, \(s_1\) and \(s_2\) become the time-\(t\) prices.
 \end{note}
 
 \item Example: For the case of the call option, when it is exercised, the stock
@@ -508,7 +509,7 @@ Currency option&Stock option\\
 \(X_t\)&\(S_t\)\\
 \(r_{\mathrm{benchmark}}\)&\(r\)\\
 \(r_{\mathrm{underlying}}\)&\(\delta\)\\
-\(\sigma\) (for exchange rates) &\(\sigma\) (for stock price)\\
+\(\sigma\) (for exchange rates) &\(\sigma\) (for stock prices)\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -562,17 +563,17 @@ From STAT3905, the time-\(t\) price of a prepaid forward for one share of stock 
 delivered at time \(T\) (\(\ge t\)) is
 \[
 F_{t,T}^{P}(S)=S_t-\operatorname{PV}_{t}(\text{dividends})
-=S_t-\sum_{i:t_i\ge t}^{}D_{t_i}e^{-r(t_i-t)}.
+=S_t-\sum_{i:t_i>t}^{}D_{t_i}e^{-r(t_i-t)}.
 \]
-Although the stock price \(S_{t_i}\) has a downward jump at each dividend
-payment time \(t_i\), the corresponding present value
-\(\operatorname{PV}_{t_i}(\text{dividends})\) drops by the same amount. This
+Although the stock price \(S_{t_j}\) has a downward jump of size \(D_{t_j}\) at each dividend
+payment time \(t_j\), the corresponding present value
+\(\operatorname{PV}_{t_j}(\text{dividends})\) drops by the same amount. This
 ensures that the prepaid forward price \(F_{t,T}^{P}(S)\) is a continuous
 function of time \(t\). Therefore, we can assume that the prepaid forward price
 process \(\{F_{t,T}^{P}(S)\}_{t\in[0,T]}\) is a geometric Brownian motion, and
-then the option pricing can be proceeded, utilizing this assumption.
+then we can proceed the option pricing, utilizing this assumption.
 
-\item Since there is no dividend payable at or after time \(T\), the time-\(T\)
+\item Since there is no dividend payable after time \(T\), the time-\(T\)
 prepaid forward price is the same as the time-\(T\) stock price, i.e.,
 \(F_{T,T}^{P}(S)=S_T\). Then, by the risk-neutral pricing formula in
 \labelcref{it:bs-rn-pricing-fmla}, the current price of the European call on
@@ -609,4 +610,338 @@ Similarly, the current price of the otherwise identical European \emph{put} is
 \[
 P_0=\boxed{\bs{K,r}{F_{0,T}^{P}(S),0}{\sigma,T}}.
 \]
+\end{enumerate}
+\subsection{Pricing Power and Asian Options}
+\label{subsect:power-asian}
+\begin{enumerate}
+\item By ``tweaking'' the generic Black-Scholes pricing function suitably, we
+are able to price some options with complex payoff structure in the
+Black-Scholes model also. One approach is to treat the underlying asset as a
+``special stock'', somewhat like what we did for currency options, but in a
+more complicated manner. We shall consider two examples in
+\Cref{subsect:power-asian}: (European) power option and (geometric average
+price) Asian option.
+
+\item The first example here is (European) \emph{power options}. For any fixed
+\(a\in\R\), an European \defn{power call option} (\defn{power put option}) has
+a payoff \((S_T^{a}-K)_{+}\) (\((K-S_T^{a})_{+}\)) at the expiration time
+\(T\). When \(a=1\), it reduces to the plain vanilla European call/put option.
+
+\item The treatments for power call option and power put option are analogous,
+so we focus on a power call option here. By \labelcref{it:bs-rn-pricing-fmla},
+the current price of the option is
+\[
+C_0^{\mathrm{power}}=e^{-rT}\expvq{(\vc{S_T^{a}}-K)_{+}}.
+\]
+To actually compute this option price, we try to ``match'' the expression with
+something we are more familiar with. By \labelcref{it:bs-call-fmla}, we know
+that
+\begin{align*}
+e^{-rT}\expvq{(S_T-K)_{+}}
+&=e^{-rT}\expvq{\qty(\vc{S_0\exp\qty[\qty(r-\delta-\frac{\sigma^2}{2})T+\sigma\widetilde{W}_T]}-K)_{+}} \\
+&=\bs{S_0,\delta}{K,r}{\sigma,T} \\
+&=S_0e^{-\delta T}\Phi(d_1)-Ke^{-rT}\Phi(d_2).
+\end{align*}
+So the idea is to express \(\vc{S_T^a}\) in the form of
+\(\vc{S_0\exp\qty[\qty(r-\delta-\frac{\sigma^2}{2})t+\sigma\widetilde{W}_t]}\),
+with possibly different inputs \(S_0,r,\delta,\sigma\), so that we can apply
+this familiar formula.
+
+\item After some algebra, we can write
+\[
+S_T^{a}=S_0^{a}\exp\qty[\gc{a\qty(r-\delta-\frac{\sigma^2}{2})T+a\sigma\widetilde{W}_T}]
+=S_0^{a}\exp\qty[\gc{\qty(r-\delta^{*}-\frac{(\sigma^{*})^2}{2})T+\sigma^{*}\widetilde{W}_T}]
+\]
+where \(\sigma^{*}=a\sigma\) and
+\(\delta^*=r-a(r-\delta)-\frac{1}{2}a(a-1)\sigma^2\). Practically, instead of
+memorizing the formulas of \(\sigma^*\) and \(\delta^*\) here, we can solve the
+following equation
+\[
+\blc{a\qty(r-\delta-\frac{\sigma^2}{2})T}+\mgc{a\sigma}\widetilde{W}_T
+=\blc{\qty(r-\delta^{*}-\frac{(\sigma^{*})^2}{2})T}+\mgc{\sigma^{*}}\widetilde{W}_T
+\]
+for the unknowns \(\sigma^*\) and \(\delta^*\) by comparing coefficients, i.e.,
+solving the following system:
+\[
+\begin{cases}
+\displaystyle a\qty(r-\delta-\frac{\sigma^2}{2})T&=\displaystyle \qty(r-\delta^{*}-\frac{(\sigma^{*})^2}{2})T,\\
+a\sigma&=\sigma^{*}.
+\end{cases}
+\]
+With the expression in terms of \(\sigma^*\) and \(\delta^*\), we can price the
+power option as follows:
+\[
+C_0^{\mathrm{power}}=e^{-rT}\expvq{\qty(\vc{S_0^{a}\exp\qty[\qty(r-\delta^{*}-\frac{(\sigma^{*})^2}{2})T+\sigma^{*}\widetilde{W}_T]}-K)_{+}}
+=\bs{\rc{S_0^a},\rc{\delta^*}}{K,r}{\rc{\sigma^*},T}.
+\]
+
+\item Next, we consider a geometric average price call option with payoff
+\((G_T-K)_{+}\) where \(G_T=(\prod_{i=1}^{n}S_{ih})^{1/n}\) with \(T=nh\). The
+approach for pricing such option is the same, but the actual procedure would be
+more complicated.
+
+Example: Consider a 3-year geometric average price call with payoff
+\((G_3-K)_{+}\) with \(G_3=(S_1\times S_2\times S_3)^{1/3}\). Like the usual
+way to deal with the geometric average as discussed before, we first write
+\begin{align*}
+G_3&=\qty(S_0^{3}e^{\qty(r-\delta-\frac{\sigma^2}{2})(1)+\sigma\widetilde{W}_1}
+e^{\qty(r-\delta-\frac{\sigma^2}{2})(2)+\sigma\widetilde{W}_2}
+e^{\qty(r-\delta-\frac{\sigma^2}{2})(3)+\sigma\widetilde{W}_3}
+)^{1/3} \\
+&=S_0\exp\qty[\qty(r-\delta-\frac{\sigma^2}{2})\frac{1+2+3}{3}+\frac{\sigma}{3}(\widetilde{W}_1+\widetilde{W}_2+\widetilde{W}_3)] \\
+&=S_0\exp\qty[\qty(r-\delta-\frac{\sigma^2}{2})(2)+\frac{\sigma}{3}(\widetilde{W}_1+\widetilde{W}_2+\widetilde{W}_3)].
+\end{align*}
+Now, note that \(\widetilde{W}_1+\widetilde{W}_2+\widetilde{W}_3
+=3\widetilde{W}_1+2(\widetilde{W}_2-\widetilde{W}_1)+(\widetilde{W}_3-\widetilde{W}_2)\).
+By the independent increment property, we have
+\(\widetilde{W}_1+\widetilde{W}_2+\widetilde{W}_3\rnsim\ndist{0}{1^2+2^2+3^2}\equiv\ndist{0}{14}\).
+
+Then, the key idea is to note that, in the risk-neutral world,
+\[
+\widetilde{W}_1+\widetilde{W}_2+\widetilde{W}_3\eqd\sqrt{\frac{14}{3}}\widetilde{W}_3
+\]
+since both follow the \(\ndist{0}{14}\) distribution. In view of this, our next
+step is to find \(\delta^{*}\) and \(\sigma^*\) such that
+\begin{align*}
+S_0\exp\qty[\qty(r-\delta-\frac{\sigma^2}{2})(2)+\frac{\sigma}{3}(\widetilde{W}_1+\widetilde{W}_2+\widetilde{W}_3)]
+&\eqd 
+S_0\exp\qty[\gc{\qty(r-\delta-\frac{\sigma^2}{2})(2)+\frac{\sigma}{3}\sqrt{\frac{14}{3}}\widetilde{W}_3}]\\
+&= S_0\exp\qty[\gc{\qty(r-\delta^{*}-\frac{(\sigma^{*})^2}{2})(3)+\sigma^{*}\widetilde{W}_3}].
+\end{align*}
+Practically, we need to solve the following equation
+\[
+\blc{\qty(r-\delta-\frac{\sigma^2}{2})(2)}+\mgc{\frac{\sigma}{3}\sqrt{\frac{14}{3}}}\widetilde{W}_3
+=\blc{\qty(r-\delta^{*}-\frac{(\sigma^{*})^2}{2})(3)}+\mgc{\sigma^{*}}\widetilde{W}_3
+\]
+for the unknowns \(\sigma^{*}\) and \(\delta^{*}\), by comparing coefficients,
+i.e., solving the following system:
+
+\[
+\begin{cases}
+\displaystyle \qty(r-\delta-\frac{\sigma^2}{2})(2)&=\displaystyle \qty(r-\delta^{*}-\frac{(\sigma^{*})^2}{2})(3),\\
+\displaystyle \frac{\sigma}{3}\sqrt{\frac{14}{3}}&=\sigma^{*}.\\
+\end{cases}
+\]
+Finally, with the expression in terms of \(\sigma^*\) and \(\delta^*\), we can
+price the geometric average price call option as follows:
+\begin{align*}
+C_0^{\mathrm{geometric}}&=e^{-rT}\expvq{(G_3-K)_{+}}\\
+&=e^{-rT}\expvq{\qty(S_0\exp\qty[\qty(r-\delta^{*}-\frac{(\sigma^{*})^2}{2})(3)+\sigma^{*}\widetilde{W}_3]-K)_{+}} \\
+&=\bs{S_0,\rc{\delta^*}}{K,r}{\rc{\sigma^*},T}.
+\end{align*}
+\end{enumerate}
+\subsection{Exchange Options}
+\label{subsect:exchange-opt}
+\begin{enumerate}
+\item \emph{Exchange option} is a complex option with particular importance. It
+unifies the concepts of ``call'' and ``put'' options together, and view them
+just as special cases of ``exchanging'' something:
+\begin{itemize}
+\item \emph{call:} buying an asset at a fixed strike price
+\faIcon{arrows-alt-h} ``exchanging'' the strike price \faIcon{money-bill-wave} for the asset
+\item \emph{put:} selling an asset at a fixed strike price
+\faIcon{arrows-alt-h} ``exchanging'' the asset for the strike price \faIcon{money-bill-wave}
+\end{itemize}
+Generally, an exchange option can incorporate exchange of \emph{any two}
+assets. Both assets can be risky, unlike the plain vanilla call/put options!
+
+\item Setting: We are in a perfect market with two assets. For \(i=1,2\):
+\begin{itemize}
+\item \(S_t^{(i)}\) denotes the time-\(t\) price of asset \(i\).
+\item The ``dividend yield'' of asset \(i\) is \(\delta^{(i)}\).
+\end{itemize}
+Given two such assets, we consider a \(T\)-year European exchange option which
+gives us the right to exchange asset 2 for asset 1, or more precisely, give up
+one unit of asset 2 in return for one unit of asset 1, at time \(T\). The
+time-\(T\) payoff of the exchange option is then \((S_T^{(1)}-S_T^{(2)})_{+}\).
+
+\item \label{it:ex-opt-assum} To price such exchange option, since two risky assets are involved, we
+need a more general assumption than the usual assumption in the Black-Scholes
+model. We shall assume that the process of the \emph{ratio} of the two asset
+prices \(\displaystyle \qty{\frac{S_t^{(1)}}{S_t^{(2)}}}\) is a geometric
+Brownian motion with volatility parameter \(\sigma\). Here, \(\sigma\) is the
+volatility of the ratio of asset prices, so
+\(\displaystyle \vari{\ln\frac{S_t^{(1)}}{S_t^{(2)}}}=\sigma^2 t\).
+
+\item With this general assumption, we can obtain the following pricing formula
+in terms of ``BS'' function.
+
+\begin{theorem}
+\label{thm:11-exchange-opt-fmla}
+Under the assumption in \labelcref{it:ex-opt-assum}, the time-0 price of the
+\(T\)-year European exchange option with payoff \((S_T^{(1)}-S_T^{(2)})_{+}\)
+is
+\[
+V_0=\bs{S_0^{(1)},\delta^{(1)}}{S_0^{(2)},\delta^{(2)}}{\sigma,T}
+=S_0^{(1)}e^{-\delta^{(1)}T}\Phi(d_1)-S_0^{(2)}e^{-\delta^{(2)}T}\Phi(d_2)
+\]
+where
+\[
+d_1=\frac{\ln(S_0^{(1)}/S_0^{(2)})+(\delta^{(2)}-\delta^{(1)}+\sigma^2/2)T}{\sigma\sqrt{T}}\qqtext{and}
+d_2=d_1-\sigma\sqrt{T}.
+\]
+\end{theorem}
+\begin{pf}
+Take asset 2 as the ``benchmark'' asset (just like the benchmark currency).
+Using cash as benchmark, the time-\(T\) payoff of the exchange option is
+\(\$(S_T^{(1)}-S_T^{(2)})_{+}\). On the other hand, using asset 2 as benchmark, the
+time-\(T\) payoff is
+\[
+\frac{\$(S_T^{(1)}-S_T^{(2)})_{+}}{\$ S_T^{(2)}}=
+\qty(\frac{S_T^{(1)}}{S_T^{(2)}}-1)_{+}\text{ units of asset 2},
+\]
+which is just the time-\(T\) payoff of a \(1\)-strike plain vanilla European
+call option on asset 1, with all values and prices expressed in the units of
+asset 2. (Note that the time-\(T\) price of asset 1 is \(S_T^{(1)}/S_T^{(2)}\)
+units of asset 2.) Pricing this plain vanilla call using the Black-Scholes call
+price formula (\labelcref{it:bs-call-fmla}), the time-0 price is
+\[
+\bs{\frac{S_0^{(1)}}{S_0^{(2)}},\delta^{(1)}}{1,\delta^{(2)}}{\sigma,T}
+=\frac{S_0^{(1)}}{S_0^{(2)}}e^{-\delta^{(1)}T}\Phi(d_1)-(1)e^{-\delta^{(2)}T}\Phi(d_2)
+\text{ units of asset 2},
+\]
+where
+\[
+d_1=\frac{\ln(\frac{S_0^{(1)}}{S_0^{(2)}}/1)+(\delta^{(2)}-\delta^{(1)}+\sigma^2/2)T}{\sigma\sqrt{T}}\qqtext{and}
+d_2=d_1-\sigma\sqrt{T}
+\]
+(same as the ones given in the theorem). To convert this price to the price in
+the units of cash, we can just multiply it by \(S_0^{(2)}\) to get:
+\[
+V_0=S_0^{(2)}\qty[\frac{S_0^{(1)}}{S_0^{(2)}}e^{-\delta^{(1)}T}\Phi(d_1)-(1)e^{-\delta^{(2)}T}\Phi(d_2)]
+=S_0^{(1)}e^{-\delta^{(1)}T}\Phi(d_1)-S_0^{(2)}e^{-\delta^{(2)}T}\Phi(d_2).
+\]
+\end{pf}
+
+\item \label{it:blended-vol-fmla}
+Note that the assumption in \labelcref{it:ex-opt-assum} is only about the
+\emph{ratio} of asset prices, but not the individual asset prices. It does not
+assume that the two asset prices are geometric Brownian motions individually.
+
+However, if this is the case, it can be shown that the ratio of the prices
+would be a geometric Brownian motion as well (see STAT3911 for more details).
+More specifically, we assume that \(\{S_t^{(1)}\}\) and \(\{S_t^{(2)}\}\) are
+geometric Brownian motion with volatilities \(\sigma_1\) and \(\sigma_2\)
+respectively, and that the correlation coefficient \(\displaystyle \corr{\ln
+\frac{S_t^{(1)}}{S_0^{(1)}}}{\ln \frac{S_t^{(2)}}{S_0^{(2)}}}=\corr{\ln
+S_t^{(1)}}{\ln S_t^{(2)}}\) is a constant \(\rho\) always.  Then, the
+volatility of the resulting geometric Brownian motion for the ratio of prices
+can be obtained by
+\[
+\sigma=\boxed{\sqrt{\sigma_1^{2}+\sigma_2^{2}\rc{-}2\rho\sigma_1\sigma_2}}.
+\]
+\begin{warning}
+We have \(\rc{-}2\rho\sigma_1\sigma_2\) rather than \(+2\rho\sigma_1\sigma_2\)
+in the expression.
+\end{warning}
+
+This is sometimes known as the \defn{blended volatility} as it ``blends'' the
+individual volatilities \(\sigma_1\) and \(\sigma_2\) together.
+
+\begin{pf}
+Note that
+\begin{align*}
+\sigma^2&=\vari{\ln\frac{S_1^{(1)}}{S_1^{(2)}}} \\
+&=\vari{\ln S_1^{(1)}-\ln S_1^{(2)}} \\
+&=\vari{\ln S_1^{(1)}}+\vari{\ln S_1^{(2)}}-2\cov{\ln S_1^{(1)}}{\ln S_1^{(2)}} \\
+&=\sigma_1^2+\sigma_2^2-2\rho\sigma_1\sigma_2.
+\end{align*}
+\end{pf}
+
+\item So far we have only considered ``one-to-one'' exchange option where one
+unit of asset is exchanged for one unit of another asset. In general, exchange
+option can also incorporate exchanging unequal numbers of assets. Consider a
+European exchange option which gives us the right to obtain \(c_1\) units of
+asset 1 by giving up \(c_2\) units of asset 2 at time \(T\). The time-\(T\)
+payoff would then become \((c_1S_T^{(1)}-c_2S_t^{(2)})_{+}\). What would be the
+impacts on the pricing?
+
+\item \label{it:gen-exchange-opt-fmla} It turns out that we only need to
+update two inputs in the ``BS'' function to get the time-0 price:
+\[
+V_0=\boxed{\bs{c_1S_0^{(1)},\delta^{(1)}}{c_2S_0^{(2)},\delta^{(2)}}{\sigma,T}}.
+\]
+\begin{pf}
+We can see this by viewing such exchange option as a special kind of
+``one-to-one'' exchange option, where one ``bundle'' \faIcon{box-open}
+(``bundle 1'') containing \(c_1\) units of asset 1 is to be exchanged for
+another ``bundle'' (``bundle 2'') \faIcon{box-open} containing \(c_2\) units of
+asset 2.
+
+The current prices of bundles 1 and 2 are \(c_1S_0^{(1)}\) and \(c_2S_0^{(2)}\)
+respectively, hence the corresponding inputs in the ``BS'' function. The
+``dividend yields'' of the bundles remain the same as the underlying asset as
+the number of assets available do not affect the growth rate. Next, consider
+\[
+\vari{\ln\frac{c_1S_1^{(1)}}{c_2S_1^{(2)}}}
+=\vari{\ln\frac{c_1}{c_2}+\ln\frac{S_1^{(1)}}{S_1^{(2)}}}
+=\vari{\ln\frac{S_1^{(1)}}{S_1^{(2)}}}
+=\sigma^2,
+\]
+so the volatility remains the same as well.
+\end{pf}
+
+\item As an application, we can use the concepts of exchange options to price
+some other exotic derivatives: maximum and minimum claims. The idea is to
+express rewrite the payoff such that some terms match with the ones for
+exchange options, thereby ``decomposing'' the claims.
+
+\item \label{it:max-claim-fmlas} Consider first a \(T\)-year maximum contingent
+claim whose time-\(T\) payoff is \(\max\qty{S_T^{(1)},S_T^{(2)}}\), the maximum
+of the two asset prices.  Writing
+\[
+\max\{S_T^{(1)},S_T^{(2)}\}=S_T^{(1)}+\qty(S_T^{(2)}-S_T^{(1)})_{+}
+=S_T^{(2)}+\qty(S_T^{(1)}-S_T^{(2)})_{+},
+\]
+we see that the maximum claim can be decomposed into: (i) a \(T\)-year prepaid
+forward on \underline{asset 1} + a time-\(T\) exchange option for
+\underline{exchanging asset 1 for asset 2}; or (ii) a \(T\)-year prepaid
+forward on \underline{asset 2} + a time-\(T\) exchange option for
+\underline{exchanging asset 2 for asset 1}. These decompositions induce the
+following formulas for the time-0 price of maximum claim:
+\begin{enumerate}[label={(\roman*)}]
+\item \(V_0^{\mathrm{max}}=\boxed{S_0^{(1)}e^{-\delta^{(1)}T}+\bs{S_0^{(2)},\delta^{(2)}}{S_0^{(1)},\delta^{(1)}}{\sigma,T}}\).
+\item \(V_0^{\mathrm{max}}=\boxed{S_0^{(2)}e^{-\delta^{(2)}T}+\bs{S_0^{(1)},\delta^{(1)}}{S_0^{(2)},\delta^{(2)}}{\sigma,T}}\).
+\end{enumerate}
+\begin{warning}
+Be careful about the orders of the inputs in the ``BS'' functions!
+\end{warning}
+
+\item \label{it:min-max-claim-relate} Next, consider a \(T\)-year minimum
+contingent claim whose time-\(T\) payoff is \(\min\qty{S_T^{(1)},S_T^{(2)}}\),
+the minimum of the two asset prices. We can utilize our knowledge on how to
+price the maximum claim for pricing this minimum claim. First write
+\[
+\min\qty{S_T^{(1)},S_T^{(2)}}=S_T^{(1)}+S_T^{(2)}-\max\qty{S_T^{(1)},S_T^{(2)}}
+\]
+(which should be somewhat familiar to students who have taken STAT3909...).
+With this decomposition, the time-0 price of the minimum claim can be obtained
+by
+\[
+V_0^{\mathrm{min}}=\boxed{S_0^{(1)}e^{-\delta^{(1)}T}+S_0^{(2)}e^{-\delta^{(2)}T}-V_0^{\mathrm{max}}},
+\]
+where \(V_0^{\mathrm{max}}\) is the time-0 price of the corresponding maximum
+claim.
+
+\item \label{it:min-claim-dir-fmlas} Alternatively, we can use a more direct
+approach as follows. Write instead (i)
+\begin{align*}
+\min\qty{S_T^{(1)},S_T^{(2)}}&=S_T^{(1)}+\min\qty{S_T^{(2)}-S_T^{(1)},0} \\
+&=S_T^{(1)}\vc{-}\min\qty{\vc{S_T^{(1)}-S_T^{(2)}},0} \\
+&=S_T^{(1)}-\qty(S_T^{(1)}-S_T^{(2)})_{+},
+\end{align*}
+or (ii)
+\begin{align*}
+\min\qty{S_T^{(1)},S_T^{(2)}}&=S_T^{(2)}+\min\qty{S_T^{(1)}-S_T^{(2)},0} \\
+&=S_T^{(2)}\vc{-}\min\qty{\vc{S_T^{(2)}-S_T^{(1)}},0} \\
+&=S_T^{(2)}-\qty(S_T^{(2)}-S_T^{(1)})_{+}.
+\end{align*}
+Consequently, the time-0 price of the minimum claim is given by
+\begin{enumerate}[label={(\roman*)}]
+\item \(V_0^{\mathrm{min}}=\boxed{S_0^{(1)}e^{-\delta^{(1)}T}\rc{-}\bs{S_0^{(1)},\delta^{(1)}}{S_0^{(2)},\delta^{(2)}}{\sigma,T}}\).
+\item \(V_0^{\mathrm{min}}=\boxed{S_0^{(2)}e^{-\delta^{(2)}T}\rc{-}\bs{S_0^{(2)},\delta^{(2)}}{S_0^{(1)},\delta^{(1)}}{\sigma,T}}\).
+\end{enumerate}
+\begin{warning}
+Again, be careful about the orders of the inputs in the ``BS'' functions!
+\end{warning}
 \end{enumerate}
