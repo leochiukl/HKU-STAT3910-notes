@@ -1,0 +1,519 @@
+\section{Interest Rate Derivatives}
+\label{sect:ir-deriv}
+\begin{enumerate}
+\item In \Cref{sect:ir-deriv}, we will apply the methodologies from the
+binomial tree model and Black-Scholes model to price \defn{interest rate
+derivatives}, which are derivatives whose payoffs depend on interest rates,
+e.g., zero-coupon bonds (simplest one!), options on zero-coupon bonds, and
+interest rate caps and floors.
+\end{enumerate}
+\subsection{The Binomial Tree Approach}
+\label{subsect:ir-deriv-binomial-tree}
+\begin{enumerate}
+\item To apply the binomial tree model for pricing interest rate derivatives,
+as one may expect, we are going to assume that (risk-free) \emph{interest
+rates} (not stock prices this time) evolve in a binomial fashion. \begin{note}
+The interest rates involved can be continuously compounded, effective annual,
+or in some other compounding frequency. Be careful about the specification of
+interest rate!
+\end{note}
+
+\item More specifically, at the end of each period, the interest rate over the
+period can change to \emph{two} possible values: one corresponds to the ``up''
+move and another corresponds to the ``down'' move. The new interest rate is
+then applied over the next period.
+
+Example: The following is a \emph{3-period} (\warn{}) binomial interest rate
+tree where the length of each period is 1 year.
+\begin{center}
+\begin{tikzpicture}
+\node[blue] (r0) at (0,0) {\(r_0\)};
+\node[violet] (ru) at (4,1) {\(r_u\)};
+\node[violet] (rd) at (4,-1) {\(r_d\)};
+\node[magenta] (ruu) at (8,2) {\(r_{uu}\)};
+\node[magenta] (rud) at (8,0) {\(r_{ud}\)};
+\node[magenta] (rdd) at (8,-2) {\(r_{dd}\)};
+\draw[-Latex] (r0.east) -- (ru.west);
+\draw[-Latex] (r0.east) -- (rd.west);
+\draw[-Latex] (ru.east) -- (ruu.west);
+\draw[-Latex] (ru.east) -- (rud.west);
+\draw[-Latex] (rd.east) -- (rud.west);
+\draw[-Latex] (rd.east) -- (rdd.west);
+\node[] () at (0,3) {Time \(0\)};
+\node[] () at (4,3) {Time \(1\)};
+\node[] () at (8,3) {Time \(2\)};
+\draw[<->, blue] (0,4) -- (4,4);
+\node[blue] () at (2,4.5) {period 1};
+\draw[<->, violet] (4,4) -- (8,4);
+\node[violet] () at (6,4.5) {period 2};
+\draw[<->, magenta] (8,4) -- (12,4);
+\node[magenta] () at (10,4.5) {period 3};
+\end{tikzpicture}
+\end{center}
+\begin{itemize}
+\item The interest rate over \blc{period 1} is \blc{\(r_0\)} (non-random).
+\item The interest rate over \vc{period 2} is \vc{\(r_u\) or \(r_d\)} (random).
+\item The interest rate over \mgc{period 3} is \mgc{\(r_{uu}\), \(r_{ud}\), or \(r_{dd}\)} (random).
+\end{itemize}
+Apart from this special feature that the value at each node applies for one
+period (but not just for a single time point), another special feature for
+binomial interest rate tree is that the \emph{risk-neutral probability} of an
+up move \(p^{*}\) is \emph{not} directly computed based on the tree parameters,
+but is rather an \emph{additional} tree parameter to be specified. \begin{warning}
+We do \underline{not} have \(p^{*}=\frac{e^{(r-\delta)h}-d}{u-d}\) in a
+binomial tree \emph{interest rate} tree!
+\end{warning}
+\begin{note}
+Roughly speaking, this situation arises since unlike a stock, interest rate is
+not tradable directly, so we are unable to just obtain the risk-neutral
+probability simply by a replicating portfolio argument (like what we did for
+binomial stock price tree).
+\end{note}
+
+\item Given a binomial interest rate tree together with the additional
+parameter \(p^*\), we can price interest rate derivatives using the
+\emph{risk-neutral pricing} method, similar to what we did before for stock
+options, but with some subtleties \warn{}.
+
+Here, the interest rates are used for \emph{two} purposes:
+\begin{enumerate}[label={(\arabic*)}]
+\item defining the payoff of the interest rate derivative
+\item discounting the payoff from the time of payment to time 0
+\end{enumerate}
+Notably, interest rate derivatives are always \emph{path-dependent} in the
+sense that the discounted payoffs for different paths would be different in
+general, since at least the discounting involved would be different (even if
+the payoffs are the same).
+
+\item \label{it:ir-deriv-rn-pricing}
+By risk-neutral pricing\footnote{We shall not discuss the justification
+of risk-neutral pricing in this context as it would involve technical concepts
+to be discussed in STAT3911.}, the time-0 price of an interest rate derivative
+is
+\[
+V_0=\boxed{\sum_{\text{all paths}}^{}\text{discount factor}\times \text{RN probability}\times \text{payoff}}.
+\]
+Note that ``discount factor'' here generally differs for different interest
+rate paths, and thus needs to be placed inside the summation (unlike the case
+for binomial stock price trees).
+
+Here, we will discuss three examples of interest rate derivatives for
+illustrate the usage of such risk-neutral pricing formula:
+\begin{enumerate}[label={(\arabic*)}]
+\item zero-coupon bonds
+\item options on zero-coupon bonds
+\item interest rate caps and floors
+\end{enumerate}
+
+\item \label{it:zcb-rn-pricing-fmla}
+Let us start with the simplest interest rate derivative: (risk-free)
+zero-coupon bonds (ZCBs). We have already learnt what a zero-coupon bond is in
+STAT2902: It (only) pays a fixed amount, which is known as the face value, at
+the maturity date of the bond. In the case where the face value equals 1, by
+risk-neutral pricing, the time-0 bond price is
+\[
+B_0=\boxed{\sum_{\text{all paths}}^{}\text{discount factor}\times \text{RN probability}}.
+\]
+since \(\text{payoff}\equiv\text{face value}=1\).
+
+\begin{note}
+In general, when the face value of the zero-coupon bond is \(F\), its time-0
+price is just given by \(F\times B_0\) (as we have \(\text{payoff}\equiv F\)
+instead).
+\end{note}
+
+In STAT2902, we have learnt the pricing of zero-coupon bonds in a simpler
+setting where the interest rate is a known constant. Here we are in a slightly
+more complex setting where the interest rates evolve according to a binomial
+tree, and hence we need to do the discounting on a \emph{path-by-path} basis.
+
+\item \label{it:zcb-option-rn-pricing-fmla}
+After warming up with pricing zero-coupon bonds, we now consider some
+more complicated interest rate derivatives. First we discuss the pricing of
+options on zero-coupon bonds. Consider a \(K\)-strike \(T\) year European call
+option on a \(s\)-year zero-coupon bond paying \(1\) (i.e., the zero-coupon
+bond matures at time \(T+s\), not time \(s\) \warn{}).
+
+\begin{center}
+\begin{tikzpicture}
+\draw[-Latex] (0,0) -- (8,0)
+node[right]{Time};
+\draw[fill] (0,0) circle [radius=0.5mm];
+\node[] () at (0,-0.5) {\(0\)};
+\node[] () at (0,-1) {buy call};
+\draw[fill] (4,0) circle [radius=0.5mm];
+\node[] () at (4,-0.5) {\(T\)};
+\node[] () at (4,-1) {call expires};
+\draw[fill] (7,0) circle [radius=0.5mm];
+\node[] () at (7,-0.5) {\(T+s\)};
+\node[] () at (7,-1) {ZCB expires};
+\draw[very thick, decorate,decoration={calligraphic brace, amplitude=5pt, raise=5pt}] (4,0) -- (7,0)
+node[midway, above=5mm]{\(s\) years};
+\end{tikzpicture}
+\end{center}
+The time-\(T\) payoff of such call option is \((P(T,T+s)-K)_{+}\) where
+\(P(T,T+s)\) is the time-\(T\) price of the underlying ZCB that matures at time
+\(T+s\). It is a random variable, viewing from time 0. So, plugging this into
+the risk-neutral pricing formula, the time-0 price of the call is
+\[
+C_0=\boxed{\sum_{\text{all paths}}^{}\text{discount factor}\times \text{RN probability}\times (P(T,T+s)-K)_{+}}.
+\]
+For the otherwise identical \emph{put} option, its time-0 price is
+\[
+P_0=\boxed{\sum_{\text{all paths}}^{}\text{discount factor}\times \text{RN probability}\times (K-P(T,T+s))_{+}}.
+\]
+\item Lastly, we consider interest rate caps and floors. They are formed by
+some building blocks known as interest rate \emph{caplets} and
+\emph{floorlets}, which are similar to call and put options on the interest
+rate, respectively.
+
+\item An \defn{interest rate caplet} is characterized by 3 elements:
+\begin{enumerate}[label={(\arabic*)}]
+\item \blc{\emph{a fixed single time period:}} we are focusing on interest rates over this period
+\item \vc{\emph{cap rate:}} a fixed interest over the period, serving as a ``cap'' on the actual interest payment
+\item \brc{\emph{notional amount:}} the amount you borrowed ``notionally'', which is
+used for the ``notional'' calculations of interest payments
+\end{enumerate}
+For illustration purpose, let us consider a concrete example about interest
+rate caplet. Suppose that you have borrowed 100 at a floating rate with annual
+interest rate payments (made at the end of each year), i.e., the interest rate
+charged ``floats'' according to the market interest rate. Assume that the
+effective interest rate over this year is \(8\%\), which is supposed to be
+known and fixed at the beginning of this year. Then, at the end of this year,
+you will need to pay an interest of \(100\times 8\%=8\).
+
+Note that here you are exposed to the upside interest rate risk. If the
+realized interest rate over this year were abnormally high (say \(1000\%\)),
+you would need to pay a huge amount of interest (\(100\times 1000\%=1000\)
+\warn{}).  To protect against this risk, an interest rate caplet that ``caps''
+the actual interest payment can be purchased.
+
+Suppose that you have purchased a \vc{5\%} (effective annual) interest rate
+caplet on a \brc{100} loan over \blc{this year}. Knowing that the interest rate
+over this year is 8\% at the beginning, which exceeds the cap rate \vc{5\%},
+there would be a caplet payment made to you \emph{at the beginning} of this
+year, of amount
+\[
+\frac{\brc{100}\times (8\%-\vc{5\%})}{1+8\%}.
+\]
+This payment amount can insure against the interest rate risk, since if you
+invest this amount at the 8\% (risk-free) interest rate over this year, you can
+receive \(\brc{100}\times (8\%-\vc{5\%})\) at the end of the year. Hence, your
+net payment at the end of the year will just be
+\[
+\underbrace{\brc{100}\times 8\%}_{\text{original interest payment}}-\underbrace{\brc{100}\times
+(8\%-\vc{5\%})}_{\text{return from investment}}
+=\brc{100}\times \vc{5\%}=5,
+\]
+so it is like the interest payment is capped at the amount required under 5\%
+interest rate.
+
+On the other hand, if the effective interest rate over this year is
+\emph{lower} than 5\%, then there would not be any caplet payment.
+
+So, in general, the caplet payment, made at the beginning of \blc{the period},
+is given by
+\[
+\brc{\text{notional amount}}\times \frac{(\text{interest rate}-\vc{\text{cap rate}})_{+}}{1+\text{interest rate}}
+\]
+(assuming the interest rates are all effective annual).
+
+\item After understanding interest rate caplet, an \defn{interest rate
+floorlet} works analogously, and is again characterized by 3 elements:
+\begin{enumerate}[label={(\arabic*)}]
+\item \blc{\emph{a fixed single time period:}} we are focusing on interest rates over this period
+\item \vc{\emph{floor rate:}} a fixed interest over the period, serving as a ``floor'' on the actual interest payment
+\item \brc{\emph{notional amount:}} the amount you lent ``notionally'', which is
+used for the ``notional'' calculations of interest payments
+\end{enumerate}
+An interest rate floorlet is used for another purpose: hedging against the
+interest rate risk for the \emph{lender}. Continuing from the example above,
+now suppose that you are the lender of the loan rather than the borrower.
+
+This time, you are exposed to the downside interest rate risk. If the realized
+interest rate over this period were abnormally low (say 0.001\%), you would only
+receive a tiny amount of interest (\(100\times 0.001\%=0.001\) \warn{}). To
+protect against this risk, you can purchase an interest rate floor.
+
+Suppose that you have purchased a \vc{5\%} (effective annual) interest rate
+caplet on a \brc{100} loan over \blc{this year}. Assuming that the interest
+rate over this year is known to be 2\% at the beginning, which is below the cap
+rate \vc{5\%}, there would be a floor payment made to you \emph{at the
+beginning} of this year, of amount
+\[
+\frac{\brc{100}\times (\vc{5\%}-2\%)}{1+2\%}.
+\]
+Similarly, after investing this amount at 2\% interest rate over this year, your
+net amount to be received at the end of the year will be
+\[
+\brc{100}\times 2\%+\brc{100}\times (\vc{5\%}-2\%)
+=\brc{100}\times \vc{5\%}=5.
+\]
+
+In general, the floor payment, made at the beginning of \blc{the period}, is
+given by
+\[
+\brc{\text{notional amount}}\times \frac{(\vc{\text{cap rate}}-\text{interest rate})_{+}}{1+\text{interest rate}}
+\]
+(assuming the interest rates are all effective annual).
+
+\item \label{it:ir-cap-floor-rn-pricing-fmla} Each interest rate
+caplet/floorlet is only over a single time period. To hedge against interest
+rate risk over multiple time periods, we can purchase multiple interest rate
+caplets/floorlets, and a collection of interest rate caplets (floorlets) over
+different time periods is known as a \defn{interest rate cap} (\defn{interest
+rate floor}).
+
+Since an interest rate cap (floor) comprises of multiple interest rate
+caplets (floorlets), there would be multiple potential caplet (floorlet)
+payments made at different time points also. Hence, to price an interest rate
+cap (floor) in a binomial interest rate tree, it is not enough to just look at
+the payoffs at terminal nodes --- we also need to consider the earlier nodes
+(somewhat like American options...), as payments may arise at those earlier
+nodes as well!
+
+So, by risk-neutral pricing, the time-0 price of an interest rate cap is the
+sum of the prices of all the caplets in the composition:
+\[
+V_0=\boxed{\sum_{\text{all paths to nonzero caplet payment}}^{}\text{discount factor}\times \text{RN probability}\times \text{caplet payment}}.
+\]
+\begin{warning}
+It is possible that a single caplet payment is triggered by \emph{multiple}
+paths! For example, in case there is a caplet payment at the \(ud\) node, then
+there would be 2 paths reaching the \(ud\) node, where the discounting is done
+differently.
+\end{warning}
+
+We replace ``caplet'' by ``floorlet'' in the formula for an interest rate
+floor.
+
+\item Example: Consider the following binomial interest rate tree with
+\(p^*=1/2\) (where all interest rates are effective annual rates):
+\begin{center}
+\begin{tikzpicture}
+\node[] (r0) at (0,0) {\(r_0=6\%\)};
+\node[] (ru) at (4,1) {\(r_u=7.704\%\)};
+\node[] (rd) at (4,-1) {\(r_d=4.673\%\)};
+\node[] (ruu) at (8,2) {\(r_{uu}=9.892\%\)};
+\node[] (rud) at (8,0) {\(r_{ud}=6\%\)};
+\node[] (rdd) at (8,-2) {\(r_{dd}=3.639\%\)};
+\draw[-Latex] (r0.east) -- (ru.west);
+\draw[-Latex] (r0.east) -- (rd.west);
+\draw[-Latex] (ru.east) -- (ruu.west);
+\draw[-Latex] (ru.east) -- (rud.west);
+\draw[-Latex] (rd.east) -- (rud.west);
+\draw[-Latex] (rd.east) -- (rdd.west);
+\node[] () at (0,3) {Time \(0\)};
+\node[] () at (4,3) {Time \(1\)};
+\node[] () at (8,3) {Time \(2\)};
+\end{tikzpicture}
+\end{center}
+Suppose that we want to price a \vc{7.5\%} interest rate cap on a \brc{100}
+\emph{3-year} loan.
+
+The first step is to understand the composition of such interest rate cap.
+Here, it consists of 3 interest rate caplets:
+\begin{enumerate}
+\item 7.5\% interest rate caplet on a 100 loan over first year (time 0 to time
+1) \faIcon{arrow-right} potential caplet payment at time 0 (initial node)
+\item 7.5\% interest rate caplet on a 100 loan over second year (time 1 to time 2)
+\faIcon{arrow-right} potential caplet payment at time 1 (\(u\) or \(d\) node)
+\item 7.5\% interest rate caplet on a 100 loan over third year (time 2 to time 3)
+\faIcon{arrow-right} potential caplet payment at time 2 (\(uu\), \(ud\) or \(du\) node)
+\end{enumerate}
+
+Next, since the caplet payment is nonzero only when the realized effective
+interest rate exceeds 7.5\%, there would only be nonzero caplet payments at the
+\(u\) node and \(uu\) node.
+
+Then, we calculate the caplet payments at \(u\) and \(uu\) nodes:
+\begin{itemize}
+\item \emph{\(u\) node:}
+\[
+\frac{100\times (7.704\%-7.5\%)}{1+7.704\%}=0.189408.
+\]
+\begin{note}
+The realized interest rate \(r_u=7.704\%\) is applied for the year starting at
+time 1, i.e., the second year, and the caplet payment here is made at the
+beginning of second year, i.e., time 1.
+\end{note}
+\item \emph{\(uu\) node:}
+\[
+\frac{100\times (9.892\%-7.5\%)}{1+9.892\%}=2.176683.
+\]
+\end{itemize}
+\begin{center}
+\begin{tikzpicture}
+\node[] (r0) at (0,0) {\(r_0=6\%\)};
+\node[] (ru) at (4,1) {\(r_u=7.704\%\)};
+\node[] (rd) at (4,-1) {\(r_d=4.673\%\)};
+\node[] (ruu) at (8,2) {\(r_{uu}=9.892\%\)};
+\node[] (rud) at (8,0) {\(r_{ud}=6\%\)};
+\node[] (rdd) at (8,-2) {\(r_{dd}=3.639\%\)};
+\node[draw] () at (4,1.5) {\faIcon{dollar-sign}: +0.189408};
+\node[draw] () at (8,2.5) {\faIcon{dollar-sign}: +2.176683};
+\draw[-Latex] (r0.east) -- (ru.west);
+\draw[-Latex] (r0.east) -- (rd.west);
+\draw[-Latex] (ru.east) -- (ruu.west);
+\draw[-Latex] (ru.east) -- (rud.west);
+\draw[-Latex] (rd.east) -- (rud.west);
+\draw[-Latex] (rd.east) -- (rdd.west);
+\node[] () at (0,3) {Time \(0\)};
+\node[] () at (4,3) {Time \(1\)};
+\node[] () at (8,3) {Time \(2\)};
+\end{tikzpicture}
+\end{center}
+Finally, by risk-neutral pricing, the time-0 price of the interest rate cap is
+\[
+V_0=(1+r_0)^{-1}\times p^*\times 0.189408+(1+r_0)^{-1}(1+r_u)^{-1}\times (p^*)^{2}\times 2.176683
+=0.5660.
+\]
+\end{enumerate}
+\subsection{The Black-Scholes Approach}
+\begin{enumerate}
+\item After discussing the pricing of interest rate derivatives using the
+binomial tree model in \Cref{subsect:ir-deriv-binomial-tree}, we will discuss
+how to perform the pricing under the Black-Scholes model. Here, we need to
+assume a certain price process follows geometric Brownian motion. But what
+price process should be assumed to follow a geometric Brownian motion?
+
+\item It turns out that we are assuming that the \emph{bond forward price}
+(i.e., the delivery/forward price of a forward contract on a zero-coupon bond)
+follows a geometric Brownian motion. Before explaining the rationale behind
+this assumption, we will have some discussions about the bond forward price.
+
+Throughout, we shall use the (seemingly complex, but useful) notation
+\(P_t(T,T+s)\) to denote the time-\(t\) forward price (i.e., the delivery price
+negotiated at time \(t\)) of a forward on a ZCB paying \(1\) at time \(T+s\),
+to be delivered at time \(T\).
+\begin{center}
+\begin{tikzpicture}
+\draw[-Latex] (0,0) -- (8,0)
+node[right]{Time};
+\draw[fill] (1,0) circle [radius=0.5mm];
+\node[] () at (1,-0.5) {\(t\)};
+\node[] () at (1,0.5) {forward price: \(P_t(T,T+s)\)};
+\node[] () at (1,-1) {current time};
+\draw[fill] (4,0) circle [radius=0.5mm];
+\node[] () at (4,-0.5) {\(T\)};
+\node[text width=2.5cm] () at (4,-1) {delivery time of forward};
+\draw[fill] (7,0) circle [radius=0.5mm];
+\node[] () at (7,-0.5) {\(T+s\)};
+\node[] () at (7,-1) {ZCB expires};
+\draw[very thick, decorate,decoration={calligraphic brace, amplitude=5pt, raise=5pt}] (4,0) -- (7,0)
+node[midway, above=5mm]{\(s\) years};
+\end{tikzpicture}
+\end{center}
+More specifically, after entering into such forward at time \(t\), we are
+obligated to pay the forward price \(P_t(T,T+s)\) to get the ZCB paying \(1\)
+at time \(T+s\), at time \(T\).
+
+\item In the special case where \(t=T\), the time-\(t\) ``forward price''
+\(P_t(T,T+s)=P_t(t,T+s)\) is nothing but just the time-\(t\) spot price of the
+ZCB paying 1 at time \(T+s\), since under the absence of arbitrage
+opportunities, the only possible price negotiated is the time-\(t\) spot
+price.
+
+\item \label{it:bond-fwd-price-ratio-fmla} Under the no-arbitrage principle, we
+have the following ``ratio formula'' for computing bond forward price:
+\[
+\boxed{P_t(T,T+s)=\frac{P_t(t,T+s)}{P_t(t,T)}}
+\]
+for any \(t\in[0,T]\). Rearranging the equation gives
+\(P_t(t,T+s)=P_t(t,T)\times P_t(T,T+s)\), which looks like the well-known
+formula \(\px[t+u]{x}=\px[t]{x}\times \px[u]{x+t}\) we learn in STAT3901!
+
+\begin{pf}
+The main idea is to construct two strategies to get the ZCB paying \(1\) at time
+\(T+s\) (corresponding to \(P_t(t,T+s)=P_t(t,T)\times P_t(T,T+s)\)) and use the
+law of one price to equate their time-\(t\) values. The two strategies are as
+follows:
+\begin{enumerate}[label={(\arabic*)}]
+\item at time \(t\) (current time): buying the ZCB paying \(1\) at time \(T+s\), at the time-\(t\) spot price
+\item at time \(t\) (current time): buying a ZCB paying \(P_t(T,T+s)\) at time
+\(T\), and entering into the forward on ZCB (then at time \(T\), the payment
+from the ZCB will be just enough for paying the delivery price)
+\end{enumerate}
+The time-\(t\) value of (1) is \(P_t(t,T+s)\), and the time-\(t\) value of (2)
+is \(P_t(t,T)\times P_t(T,T+s)\).
+\end{pf}
+
+\item Now, we consider a \(T\)-year \(K\)-strike European call option on an
+\(s\)-year ZCB paying \(1\) (i.e., ZCB expires at time \(T+s\)). The time-\(T\)
+payoff this call is
+\[
+(P_T(T,T+s)-K)_{+}
+=\qty(P_T(T,T+s)-K\times \underbrace{P_T(T,T)}_{1})_{+}
+\triangleq (S_T^{(1)}-S_T^{(2)})+
+\]
+After writing the payoff in such a way, it becomes clear that the call on ZCB can
+indeed be viewed as an \emph{exchange option}. More specifically, we let:
+\begin{itemize}
+\item asset 1 (underlying asset): a ZCB of \(1\) maturing at time \(T+s\)
+(time-\(T\) price: \(S_T^{(1)}=P_T(T,T+s)\), which is random)
+\item asset 2 (strike asset): a ZCB of \(K\) maturing at time \(T\) (time-\(T\)
+price: \(S_T^{(2)}=K\times P_T(T,T)\), which is nonrandom)
+\end{itemize}
+Then, the call option can be seen as an exchange option which gives us the
+right to exchange asset 2 for asset 1.
+
+\begin{remark}
+\item The time-\(t\) (spot) prices of assets 1 and 2 are
+\(S_t^{(1)}=P_t(t,T+s)\) and \(S_t^{(2)}=K\times P_t(t,T)\).
+\item Both assets 1 and 2 here are nondividend-paying, since ZCB does not pay
+any dividends.
+\end{remark}
+
+\item This point of view motivates us to use the pricing assumption as
+suggested in \labelcref{it:ex-opt-assum} for pricing options on ZCB, namely
+assuming that the ratio of the two asset prices \(\displaystyle
+\qty{\frac{S_t^{(1)}}{S_t^{(2)}}}_{t\in[0,T]}=\qty{\frac{P_t(t,T+s)}{K\times P_t(t,T)}}_{t\in[0,T]}\) is a
+geometric Brownian motion (GBM) with volatility parameter \(\sigma\).
+
+The expression \(\displaystyle \frac{P_t(t,T+s)}{K\times P_t(t,T)}\) appears to be quite
+familiar. Indeed, it is just \(P_t(T,T+s)/K\) by
+\labelcref{it:bond-fwd-price-ratio-fmla}.
+
+Since \(\{P_t(T,T+s)/K\}\) follows a GBM iff \(\{P_t(T,T+s)\}\) follows a GBM,
+and both GBMs would have the same volatility parameter \(\sigma\)\footnote{This
+can be seen by noting that \(\vari{\ln(P_t(T,T+s)/K)}=\vari{\ln P_t(T,T+s)-\ln
+K}=\vari{\ln P_t(T,T+s)}\).}, the assumption above is just equivalent to the
+assumption that the \emph{bond forward price process}
+\(\{P_t(T,T+s)\}_{t\in[0,T]}\) follows a geometric Brownian motion with
+volatility \(\sigma\), where \(\sigma\) is the volatility of the bond forward:
+\[
+\vari{\ln P_t(T,T+s)}=\sigma^2 t,
+\]
+for any \(t\in[0,T]\). Usually the pricing assumption is phrased in this way
+(i.e., in terms of bond forward price).
+
+\item \label{it:zcb-call-put-bs-pricing-fmla} With this pricing assumption, we can
+apply the formulas derived in \Cref{subsect:exchange-opt} to compute the time-0
+prices of European options on ZCBs:
+\begin{itemize}
+\item \emph{\(T\)-year \(K\)-strike call on ZCB:}
+\begin{align*}
+C_0&=\bs{S^{(1)}_{0},0}{S^{(2)}_{0},0}{\sigma,T} \\
+&=\boxed{\bs{P_0(0,T+s),0}{K\times P_0(0,T),0}{\sigma,T}} \\
+&=P_0(0,T+s)\Phi(d_1)-K\times P_0(0,T)\Phi(d_2)
+\end{align*}
+where
+\[
+d_1=\frac{\ln[P_0(0,T+s)/(K\times P_0(0,T))]+\frac{1}{2}\sigma^2 T}{\sigma\sqrt{T}}
+\qqtext{and}
+d_2=d_1-\sigma\sqrt{T}.
+\]
+\item \emph{\(T\)-year \(K\)-strike put on ZCB:}
+\begin{align*}
+P_0&=\bs{S^{(2)}_{0},0}{S^{(1)}_{0},0}{\sigma,T} \\
+&=\boxed{\bs{K\times P_0(0,T),0}{P_0(0,T+s),0}{\sigma,T}} \\
+&=K\times P_0(0,T)\Phi(d_1)-P_0(0,T+s)\Phi(d_2)
+\end{align*}
+where
+\[
+d_1=\frac{\ln[(K\times P_0(0,T))/P_0(0,T+s)]+\frac{1}{2}\sigma^2 T}{\sigma\sqrt{T}}
+\qqtext{and}
+d_2=d_1-\sigma\sqrt{T}.
+\]
+\end{itemize}
+\end{enumerate}

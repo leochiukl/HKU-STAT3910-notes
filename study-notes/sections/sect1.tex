@@ -6,6 +6,7 @@ Here, we will investigate it in more details and study some further topics
 about it.
 \end{enumerate}
 \subsection{Dynamic Hedging}
+\label{subsect:dynamic-hedging}
 \begin{enumerate}
 \item In STAT3905, the main tool for pricing an option in a multi-period
 binomial tree is \emph{risk-neutral pricing}. Even in the backward induction
@@ -348,7 +349,7 @@ G_T=\qty(\prod_{i=1}^{n}S_{ih})^{1/n}.
 The arithmetic average is more familiar to us and is the ``usual'' way of
 computing average. However, it turns out that using geometric average makes the
 option pricing more mathematically tractable, especially in the continuous-time
-\emph{Black-Scholes model} (in \Cref{sect:bs-model}).
+\emph{Black-Scholes model} (in \Cref{sect:bs-model-pricing}).
 
 \item After fixing a method for computing average, say geometric average, we
 can use \(G_T\) to replace either \(S_T\) or \(K\), and then the resulting

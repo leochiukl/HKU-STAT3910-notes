@@ -1,5 +1,5 @@
-\section{Black-Scholes Model}
-\label{sect:bs-model}
+\section{Pricing in Black-Scholes Model}
+\label{sect:bs-model-pricing}
 \begin{enumerate}
 \item In STAT3905, we have studied Black-Scholes model. It will be studied
 again in STAT3910, but in more details. We will consider a more general form of
@@ -78,7 +78,7 @@ This means
 =\sigma^2t.
 \]
 \end{itemize}
-\item Now, we shall show that the model studied in STAT3905 is indeed a special
+\item \label{it:stock-price-ratio-dist} Now, we shall show that the model studied in STAT3905 is indeed a special
 case of the one we study here. First fix any time interval \([s,s+t]\).  Then
 note that
 \[
@@ -88,14 +88,17 @@ note that
 By the stationary increments property, we have \(W_{s+t}-W_{s}\sim \ndist{0}{t}\), so
 we indeed have
 \[
-\ln\frac{S_{s+t}}{S_s}\sim \ndist{\qty(\alpha-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t}.
+\ln\frac{S_{s+t}}{S_s}\sim \boxed{\ndist{\qty(\alpha-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t}}.
 \]
 We can also express this in terms of log-normal distribution:
 \[
-\frac{S_{s+t}}{S_s}\sim \lndist{\qty(\alpha-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t}.
+\frac{S_{s+t}}{S_s}\sim \boxed{\lndist{\qty(\alpha-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t}}.
 \]
+In particular, the distribution is free of \(s\) and only depends on \(t\), due
+to the stationary increments property of Weiner process. We have
+\emph{stationary stock price ratios} in the Black-Scholes model.
 
-To reduce this to the case for STAT3905, we can set \(s=0\), which yields
+\item To reduce this to the case for STAT3905, we can set \(s=0\), which yields
 \[
 \frac{S_{t}}{S_0}\sim \lndist{\qty(\alpha-\delta-\frac{\sigma^2}{2})t}{\sigma^{2}t},
 \]
@@ -131,8 +134,7 @@ applicable here:
 \[
 \widehat{d_2}=\frac{\ln(S_0/K)+(\alpha-\delta-\sigma^2/2)T}{\sigma\sqrt{T}}.
 \]
-\item \label{it:bs-mean-var-stock-price} \emph{mean and variance of \(S_t\)
-(lognormal mean and variance formulas):}
+\item \label{it:bs-mean-var-stock-price} \emph{mean and variance of \(S_t\):}
 \(\expv{S_t}=\boxed{S_0e^{(\alpha-\delta)t}}\) and
 \(\vari{S_t}=\boxed{(\expv{S_t})^{2}(e^{\sigma^{2} t}-1)}\).
 \end{enumerate}
@@ -140,7 +142,7 @@ applicable here:
 \item Here we introduce several more probabilistic quantities. The first one is
 \emph{quantiles}. For the case of stock price \(S_t\) here, the \(p\)th
 quantile, or \(100p\)th percentile, of \(S_t\) is just the value of \(c\) that
-makes \(\prob{S_t\le c}=\alpha\). We shall denote it by
+makes \(\prob{S_t\le c}=p\). We shall denote it by
 \(\pi_{p}(S_t)\).
 
 \begin{note}
@@ -157,14 +159,14 @@ where \(\pi_{p}(Z)\) is the \(100p\)th percentile of a \emph{standard normal}
 random variable \(Z\).
 
 \begin{pf}
-We shall use without proof the following general result: If \(g\) is an
-\emph{increasing} continuous function applied to a random variable \(X\), then
-\(\pi_{p}(g(Y))=g(\pi_{p}(Y))\) --- We can ``interchange'' \(\pi_{p}\) and
-\(g\).
+We shall use without proof the following general result: If \(g\) is a
+\emph{strictly increasing} continuous function applied to a random variable
+\(X\), then \(\pi_{p}(g(X))=g(\pi_{p}(X))\) --- We can ``interchange''
+\(\pi_{p}\) and \(g\).
 
 First, note that for a Weiner process \(\{W_t\}_{t\ge 0}\), for any \(t\ge 0\),
 we can write \(W_t\eqd\sqrt{t}Z\) where \(Z\) is a standard normal random
-variable, since \(W_t\sim N(0,t)\). Thus, we have
+variable, since \(W_t\sim \ndist{0}{t}\). Thus, we have
 \[
 S_t\eqd S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma\sqrt{t}Z].
 \]
@@ -172,7 +174,8 @@ With a fixed \(t\ge 0\), we define the function \(g\) by
 \[
 g(\vc{x})=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma\sqrt{t}\vc{x}],
 \]
-which is continuous and increasing. Then, applying the general result, we get
+which is continuous and strictly increasing. Then, applying the general result,
+we get
 \[
 \pi_p(S_t)=\pi_p(g(Z))=g(\pi_p(Z))=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t + \sigma\sqrt{t}\cdot \pi_{p}(Z)].
 \]
@@ -247,7 +250,8 @@ the risk-free rate \(r\).
 \item The stochastic process \(\{W_t\}\) is a Weiner process in the \emph{real}
 world.
 \end{itemize}
-\item Next, we want to enter into the \emph{risk-neutral} world. Before that,
+\item \label{it:st-rn-expr}
+Next, we want to enter into the \emph{risk-neutral} world. Before that,
 we do some preparatory work. First define another stochastic process
 \(\{\widetilde{W}_t\}\) by \[
  \widetilde{W}_t=W_t+\frac{\alpha-r}{\sigma}t
@@ -257,7 +261,7 @@ for any \(t\ge 0\). Then, we can write the stock price formula as:
 S_t&=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma W_t] \\
 &=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t+\sigma\qty(\widetilde{W}_t-\frac{\alpha-r}{\sigma}t)] \\
 &=S_0\exp\qty[\qty(\alpha-\delta-\frac{\sigma^2}{2})t-(\alpha-r)t+\sigma\widetilde{W}_t] \\
-&=S_0\exp\qty[\qty(\vc{r}-\delta-\frac{\sigma^2}{2})t+\sigma\vc{\widetilde{W}_t}].
+&=\boxed{S_0\exp\qty[\qty(\vc{r}-\delta-\frac{\sigma^2}{2})t+\sigma\vc{\widetilde{W}_t}]}.
 \end{align*}
 The final expression is very similar to the formula in \labelcref{it:bs-model-formulation}.
 The only changes are that \(\alpha\) becomes \(r\), and \(W_t\) becomes
@@ -611,15 +615,15 @@ Similarly, the current price of the otherwise identical European \emph{put} is
 P_0=\boxed{\bs{K,r}{F_{0,T}^{P}(S),0}{\sigma,T}}.
 \]
 \end{enumerate}
-\subsection{Pricing Power and Asian Options}
-\label{subsect:power-asian}
+\subsection{Pricing Complex Options under Black Scholes Model: Treating the Underlying Asset as a Special Stock}
+\label{subsect:bs-special-stock}
 \begin{enumerate}
 \item By ``tweaking'' the generic Black-Scholes pricing function suitably, we
 are able to price some options with complex payoff structure in the
 Black-Scholes model also. One approach is to treat the underlying asset as a
 ``special stock'', somewhat like what we did for currency options, but in a
 more complicated manner. We shall consider two examples in
-\Cref{subsect:power-asian}: (European) power option and (geometric average
+\Cref{subsect:bs-special-stock}: (European) power option and (geometric average
 price) Asian option.
 
 \item The first example here is (European) \emph{power options}. For any fixed
@@ -643,9 +647,10 @@ e^{-rT}\expvq{(S_T-K)_{+}}
 &=S_0e^{-\delta T}\Phi(d_1)-Ke^{-rT}\Phi(d_2).
 \end{align*}
 So the idea is to express \(\vc{S_T^a}\) in the form of
-\(\vc{S_0\exp\qty[\qty(r-\delta-\frac{\sigma^2}{2})t+\sigma\widetilde{W}_t]}\),
-with possibly different inputs \(S_0,r,\delta,\sigma\), so that we can apply
-this familiar formula.
+\(\vc{S_0\exp\qty[\qty(r-\delta-\frac{\sigma^2}{2})T+\sigma\widetilde{W}_T]}\)
+(matching with the expression in \labelcref{it:st-rn-expr}), with possibly
+different inputs \(S_0,r,\delta,\sigma\), so that we can apply this familiar
+formula.
 
 \item After some algebra, we can write
 \[
@@ -675,10 +680,10 @@ C_0^{\mathrm{power}}=e^{-rT}\expvq{\qty(\vc{S_0^{a}\exp\qty[\qty(r-\delta^{*}-\f
 =\bs{\rc{S_0^a},\rc{\delta^*}}{K,r}{\rc{\sigma^*},T}.
 \]
 
-\item Next, we consider a geometric average price call option with payoff
-\((G_T-K)_{+}\) where \(G_T=(\prod_{i=1}^{n}S_{ih})^{1/n}\) with \(T=nh\). The
-approach for pricing such option is the same, but the actual procedure would be
-more complicated.
+\item \label{it:bs-geo-avg-price} Next, we consider a geometric average price
+call option with payoff \((G_T-K)_{+}\) where
+\(G_T=(\prod_{i=1}^{n}S_{ih})^{1/n}\) with \(T=nh\). The approach for pricing
+such option is the same, but the actual procedure would be more complicated.
 
 Example: Consider a 3-year geometric average price call with payoff
 \((G_3-K)_{+}\) with \(G_3=(S_1\times S_2\times S_3)^{1/3}\). Like the usual
@@ -722,25 +727,68 @@ i.e., solving the following system:
 \displaystyle \frac{\sigma}{3}\sqrt{\frac{14}{3}}&=\sigma^{*}.\\
 \end{cases}
 \]
+\begin{note}
+It can be verified that we have
+\[
+\delta^{*}=\frac{1}{2}\qty(\frac{2}{3}r+\frac{4}{3}\delta+\frac{4}{27}\sigma^2)
+\qqtext{and}
+\sigma^{*}=\sqrt{\frac{14}{27}}\sigma.
+\]
+\end{note}
+
 Finally, with the expression in terms of \(\sigma^*\) and \(\delta^*\), we can
 price the geometric average price call option as follows:
 \begin{align*}
-C_0^{\mathrm{geometric}}&=e^{-rT}\expvq{(G_3-K)_{+}}\\
+C_0^{\mathrm{geo-price}}&=e^{-rT}\expvq{(G_3-K)_{+}}\\
 &=e^{-rT}\expvq{\qty(S_0\exp\qty[\qty(r-\delta^{*}-\frac{(\sigma^{*})^2}{2})(3)+\sigma^{*}\widetilde{W}_3]-K)_{+}} \\
 &=\bs{S_0,\rc{\delta^*}}{K,r}{\rc{\sigma^*},T}.
 \end{align*}
+
+\item Some natural follow-up questions on \labelcref{it:bs-geo-avg-price} would
+be the following.
+\begin{enumerate}[label={Q\arabic*}]
+\item \label{it:bs-geo-avg-strike-q} How about geometric average \emph{strike}
+call option with payoff \((S_T-G_T)_{+}\) where
+\(G_T=(\prod_{i=1}^{n}S_{ih})^{1/n}\) with \(T=nh\)? Can we use a similar
+approach to price it?
+
+\emph{Answer.} Although such call option can be priced, the approach used is
+somewhat different. The approach in \labelcref{it:bs-geo-avg-price} does not
+work since both \(S_T\) and \(G_T\) are random variables. It turns out that we
+need to use the concept of \emph{exchange option} (to be introduced in
+\Cref{subsect:exchange-opt}) for pricing it, so we defer the discussion on how
+to price such call option to \labelcref{it:bs-geo-avg-strike}.
+
+\item How about \emph{arithmetic} average price/strike options? Can we use a
+similar approach to price them?
+
+\emph{Answer.} It turns out that it is much more challenging to deal with
+arithmetic average options under Black-Scholes model since the arithmetic
+average \(A_T=\sum_{i=1}^{n}S_{ih}/n\) (with \(T=nh\)) does \emph{not} follow a
+lognormal distribution anymore. \begin{warning}
+Sum of lognormal random variables is \underline{not} lognormally distributed!
+Instead, it follows a very complex distribution and is much less mathematically
+tractable.
+\end{warning}
+In fact, no closed-form formula for pricing arithmetic average options under
+Black-Scholes model is currently known! Consequently, one usually needs to
+resort to numerical methods for pricing arithmetic average options
+approximately, such as Monte Carlo simulation.
+\end{enumerate}
 \end{enumerate}
 \subsection{Exchange Options}
 \label{subsect:exchange-opt}
 \begin{enumerate}
 \item \emph{Exchange option} is a complex option with particular importance. It
-unifies the concepts of ``call'' and ``put'' options together, and view them
-just as special cases of ``exchanging'' something:
+unifies the concepts of ``call'' and ``put'' options together, and they can be
+viewed just as special cases of ``exchanging'' something:
 \begin{itemize}
 \item \emph{call:} buying an asset at a fixed strike price
-\faIcon{arrows-alt-h} ``exchanging'' the strike price \faIcon{money-bill-wave} for the asset
+\faIcon{arrows-alt-h} ``exchanging'' the strike price (``pile of cash'')
+\faIcon{money-bill-wave} for the asset
 \item \emph{put:} selling an asset at a fixed strike price
-\faIcon{arrows-alt-h} ``exchanging'' the asset for the strike price \faIcon{money-bill-wave}
+\faIcon{arrows-alt-h} ``exchanging'' the asset for the strike price (``pile of
+cash'') \faIcon{money-bill-wave}
 \end{itemize}
 Generally, an exchange option can incorporate exchange of \emph{any two}
 assets. Both assets can be risky, unlike the plain vanilla call/put options!
@@ -818,15 +866,15 @@ Note that the assumption in \labelcref{it:ex-opt-assum} is only about the
 \emph{ratio} of asset prices, but not the individual asset prices. It does not
 assume that the two asset prices are geometric Brownian motions individually.
 
-However, if this is the case, it can be shown that the ratio of the prices
-would be a geometric Brownian motion as well (see STAT3911 for more details).
-More specifically, we assume that \(\{S_t^{(1)}\}\) and \(\{S_t^{(2)}\}\) are
-geometric Brownian motion with volatilities \(\sigma_1\) and \(\sigma_2\)
-respectively, and that the correlation coefficient \(\displaystyle \corr{\ln
-\frac{S_t^{(1)}}{S_0^{(1)}}}{\ln \frac{S_t^{(2)}}{S_0^{(2)}}}=\corr{\ln
-S_t^{(1)}}{\ln S_t^{(2)}}\) is a constant \(\rho\) always.  Then, the
-volatility of the resulting geometric Brownian motion for the ratio of prices
-can be obtained by
+If we make a stronger assumption that \(\{S_t^{(1)}\}\) and \(\{S_t^{(2)}\}\)
+form a \emph{multivariate} geometric Brownian motion\footnote{See STAT3911 for
+more details about this.}, then the two stock price processes would be
+geometric Brownian motions individually, say with volatilities \(\sigma_1\) and
+\(\sigma_2\) respectively. Here, we shall also assume that the correlation
+coefficient \(\displaystyle \corr{\ln \frac{S_t^{(1)}}{S_0^{(1)}}}{\ln
+\frac{S_t^{(2)}}{S_0^{(2)}}}=\corr{\ln S_t^{(1)}}{\ln S_t^{(2)}}\) is a
+constant \(\rho\) always.  Then, the volatility of the resulting geometric
+Brownian motion for the ratio of prices can be obtained by
 \[
 \sigma=\boxed{\sqrt{\sigma_1^{2}+\sigma_2^{2}\rc{-}2\rho\sigma_1\sigma_2}}.
 \]
@@ -864,9 +912,9 @@ V_0=\boxed{\bs{c_1S_0^{(1)},\delta^{(1)}}{c_2S_0^{(2)},\delta^{(2)}}{\sigma,T}}.
 \begin{pf}
 We can see this by viewing such exchange option as a special kind of
 ``one-to-one'' exchange option, where one ``bundle'' \faIcon{box-open}
-(``bundle 1'') containing \(c_1\) units of asset 1 is to be exchanged for
-another ``bundle'' (``bundle 2'') \faIcon{box-open} containing \(c_2\) units of
-asset 2.
+(``bundle 2'') containing \(c_2\) units of asset 2 is to be exchanged for
+another ``bundle'' (``bundle 1'') \faIcon{box-open} containing \(c_1\) units of
+asset 1.
 
 The current prices of bundles 1 and 2 are \(c_1S_0^{(1)}\) and \(c_2S_0^{(2)}\)
 respectively, hence the corresponding inputs in the ``BS'' function. The
@@ -927,21 +975,153 @@ claim.
 approach as follows. Write instead (i)
 \begin{align*}
 \min\qty{S_T^{(1)},S_T^{(2)}}&=S_T^{(1)}+\min\qty{S_T^{(2)}-S_T^{(1)},0} \\
-&=S_T^{(1)}\vc{-}\min\qty{\vc{S_T^{(1)}-S_T^{(2)}},0} \\
+&=S_T^{(1)}\vc{-}\max\qty{\vc{S_T^{(1)}-S_T^{(2)}},0} \\
 &=S_T^{(1)}-\qty(S_T^{(1)}-S_T^{(2)})_{+},
 \end{align*}
 or (ii)
 \begin{align*}
 \min\qty{S_T^{(1)},S_T^{(2)}}&=S_T^{(2)}+\min\qty{S_T^{(1)}-S_T^{(2)},0} \\
-&=S_T^{(2)}\vc{-}\min\qty{\vc{S_T^{(2)}-S_T^{(1)}},0} \\
+&=S_T^{(2)}\vc{-}\max\qty{\vc{S_T^{(2)}-S_T^{(1)}},0} \\
 &=S_T^{(2)}-\qty(S_T^{(2)}-S_T^{(1)})_{+}.
 \end{align*}
 Consequently, the time-0 price of the minimum claim is given by
 \begin{enumerate}[label={(\roman*)}]
-\item \(V_0^{\mathrm{min}}=\boxed{S_0^{(1)}e^{-\delta^{(1)}T}\rc{-}\bs{S_0^{(1)},\delta^{(1)}}{S_0^{(2)},\delta^{(2)}}{\sigma,T}}\).
+\item \(V_0^{\mathrm{min}}=\boxed{S_0^{(1)}e^{-\delta^{(1)}T}\rc{-}\bs{S_0^{(1)},\delta^{(1)}}{S_0^{(2)},\delta^{(2)}}{\sigma,T}}\), or
 \item \(V_0^{\mathrm{min}}=\boxed{S_0^{(2)}e^{-\delta^{(2)}T}\rc{-}\bs{S_0^{(2)},\delta^{(2)}}{S_0^{(1)},\delta^{(1)}}{\sigma,T}}\).
 \end{enumerate}
 \begin{warning}
 Again, be careful about the orders of the inputs in the ``BS'' functions!
 \end{warning}
+
+\item \label{it:bs-geo-avg-strike} After learning the concept of exchange
+option, we are able to price the geometric average strike call option as
+mentioned in \labelcref{it:bs-geo-avg-strike-q}, though the procedure would be
+even more complicated than the one in \labelcref{it:bs-geo-avg-price}!
+
+For illustration, let us use a 3-year geometric average \emph{strike} call with payoff
+\((S_3-G_3)_{+}\) with \(G_3=(S_1\times S_2\times S_3)^{1/3}\) as an example.
+Like what we did in \labelcref{it:bs-geo-avg-price}, we are going to handle the
+geometric average \(G_3\) by treating it as the time-3 price of a ``special
+stock''. More specifically, we are going to treat this geometric average strike
+call as a 3-year exchange option granting us the right to exchange one unit of
+``special stock'' (``asset 2'' with time-3 price: \(G_3\)) for one unit of the
+normal stock (``asset 1'' with time-3 price: \(S_3\)).
+
+By \labelcref{it:bs-rn-pricing-fmla}, the geometric average strike call price
+is then
+\[
+V_0=e^{-rT}\expvq{\qty(S_T-G_T)_{+}}
+\]
+with \(T=3\). Here, the key idea is to ``match'' \(S_T\) and \(G_T\) with the
+expressions of \(S_T^{(1)}\) and \(S_T^{(2)}\) respectively, under the
+(stronger) assumption specified in \labelcref{it:blended-vol-fmla}, i.e.,
+\(\{S_t^{(1)}\}\) and \(\{S_t^{(2)}\}\) are both geometric Brownian motions
+individually with constant correlation coefficient \(\rho=\corr{\ln
+S_t^{(1)}}{\ln S_t^{(2)}}\) always. Then by \labelcref{it:st-rn-expr} we can
+write:
+\[
+S_T^{(1)}=S_0^{(1)}\exp\qty[\qty(r-\delta^{(1)}-\frac{\sigma_1^2}{2})T+\sigma_1\widetilde{W}_T^{(1)}]
+\]
+and
+\[
+S_T^{(2)}=S_0^{(2)}\exp\qty[\qty(r-\delta^{(2)}-\frac{\sigma_2^2}{2})T+\sigma_2\widetilde{W}_T^{(2)}]
+\]
+\begin{note}
+Generally, the ``\(\widetilde{W}_T\)'' for the prices of assets 1 and 2 could
+be different, so we add superscripts to differentiate them.
+\end{note}
+
+Our goal is then to match the expressions of \(S_T\) and \(G_T\) with the ones
+of \(S_T^{(1)}\) and \(S_T^{(2)}\).
+
+
+\item By \labelcref{it:st-rn-expr}, we have
+\[
+S_3=S_0\exp\qty[\qty(r-\delta-\frac{\sigma^2}{2})(3)+\sigma\widetilde{W}_3].
+\]
+By \labelcref{it:bs-geo-avg-price}, we have
+\[
+G_3\eqd S_0\exp\qty[\qty(r-\delta^{*}-\frac{(\sigma^{*})^2}{2})(3)+\sigma^{*}\widetilde{W}_3]
+\]
+with
+
+\[
+\delta^{*}=\frac{1}{2}\qty(\frac{2}{3}r+\frac{4}{3}\delta+\frac{4}{27}\sigma^2)
+\qqtext{and}
+\sigma^{*}=\sqrt{\frac{14}{27}}\sigma.
+\]
+
+Hence, we can match these expressions with the ones of \(S_3^{(1)}\) and
+\(S_3^{(2)}\) by setting:
+\begin{itemize}
+\item \(S_0^{(1)}=S_0^{(2)}=S_0\);
+\item \(\delta^{(1)}=\delta\) and \(\delta^{(2)}=\delta^*\);
+\item \(\sigma_1=\sigma\) and \(\sigma_2=\sigma^*\).
+\end{itemize}
+The last piece of information that is missing for pricing the geometric average
+strike call is the value of the blended volatility
+\(\sigma^{\mathrm{blended}}=\sqrt{\sigma_1^2+\sigma_2^2-2\rho\sigma_1\sigma_2}\).
+To find it, we need to deduce what the constant correlation coefficient
+\(\rho\) is.
+
+\item Since the correlation coefficient \(\rho\) is constant by assumption, we
+can deduce its value by finding the time-\(3\) correlation \(\corr{\ln
+S_3^{(1)}}{\ln S_3^{(2)}}=\corr{\ln S_3}{\ln G_3}\). \begin{note}
+The correlation is the same in both real and risk-neutral worlds, so we will
+work in the risk-neutral world below.
+\end{note}
+
+Consider first the covariance
+\begin{align}
+\nonumber\cov{\ln S_3}{\ln G_3}&=\cov{\ln S_0+\qty(r-\delta-\frac{\sigma^2}{2})(3)+\sigma\widetilde{W}_3}
+{\ln S_0+\qty(r-\delta-\frac{\sigma^2}{2})(2)+\frac{\sigma}{3}(\widetilde{W}_1+\widetilde{W}_2+\widetilde{W}_3)
+} \\
+\nonumber&=\cov{\sigma\widetilde{W}_3}{\frac{\sigma}{3}(\widetilde{W}_1+\widetilde{W}_2+\widetilde{W}_3)}\qquad\text{(drop all non-random terms)} \\
+\nonumber&=\frac{\sigma^2}{3}\qty[\cov{\widetilde{W}_3}{\widetilde{W}_1}+\cov{\widetilde{W}_3}{\widetilde{W}_2}+\cov{\widetilde{W}_3}{\widetilde{W}_3}] \\
+\label{eq:brown-cov-min}&=\frac{\sigma^2}{3}(1+2+3) \\
+\nonumber&=2\sigma^2.
+\end{align}
+\begin{warning}
+Substituting \(G_3\) by the expression \(\displaystyle
+S_0\exp\qty[\qty(r-\delta^{*}-\frac{(\sigma^{*})^2}{2})(3)+\sigma^{*}\widetilde{W}_3]\)
+in the covariance could yield an incorrect result since this expression is only
+equal \emph{in distribution} to \(G_3\), and such equality in distribution does
+\underline{not} guarantee that the covariance would remain unchanged after the
+substitution (unlike \emph{marginal} probabilistic quantities such as their
+individual expectations). Thus, to obtain the correct covariance, we should use
+\emph{actual} expressions of \(S_3\) and \(G_3\).
+\end{warning}
+
+To get \labelcref{eq:brown-cov-min}, we note that for any \(t=1,2\),
+\begin{align*}
+\cov{\widetilde{W}_3}{\widetilde{W}_t}
+&=\expv{\widetilde{W}_3\widetilde{W}_t}-\underbrace{\expv{\widetilde{W}_3}\expv{\widetilde{W}_t}}_{0} \\
+&=\expv{\widetilde{W}_t(\widetilde{W}_3-\widetilde{W}_t)}+\underbrace{\expv{\widetilde{W}_t^2}}_{=\vari{\widetilde{W}_t}=t} \\
+&=\underbrace{\expv{\widetilde{W}_3}}_{0}\expv{\widetilde{W}_3-\widetilde{W}_t}+t&\text{(independent increments)} \\
+&=t,
+\end{align*}
+and of course
+\(\cov{\widetilde{W}_3}{\widetilde{W}_3}=\vari{\widetilde{W}_3}=3\).
+
+Hence, the correlation coefficient is
+\[
+\rho=\corr{\ln S_3}{\ln G_3}
+=\frac{\cov{\ln S_3}{\ln G_3}}{\sqrt{\vari{\ln S_3}\vari{\ln G_3}}}
+=\frac{2\sigma^2}{\sigma\sqrt{3}\times \sigma^*\sqrt{3}}
+=\frac{2\sigma^2}{3\sqrt{\frac{14}{27}}\sigma^{2}}
+=\frac{2}{3}\sqrt{\frac{27}{14}}.
+\]
+Knowing the value of \(\rho\), we can then obtain the blended volatility:
+\begin{align*}
+\sigma^{\mathrm{blended}}=\sqrt{\sigma_1^2+\sigma_2^2-2\rho\sigma_1\sigma_2}
+&=\sqrt{\sigma^2+(\sigma^*)^{2}-\frac{4}{3}\sqrt{\frac{27}{14}}\sigma\sigma^*} \\
+&=\sqrt{\sigma^2+\frac{14}{27}\sigma^2-\frac{4}{3}\sqrt{\frac{27}{14}}\sqrt{\frac{14}{27}}\sigma^2} \\
+&=\sigma\sqrt{\frac{5}{27}}.
+\end{align*}
+\item After obtaining the value of blended volatility, we are finally (!) able
+to price the geometric average strike call option:
+\[
+C_0^{\mathrm{geo-strike}}=\bs{S_0,\delta}{\rc{S_0},\rc{\delta^{*}}}{\rc{\sigma^{\mathrm{blended}}},T}
+=\bs{S_0,\delta}{S_0,\frac{1}{2}\qty(\frac{2}{3}r+\frac{4}{3}\delta+\frac{4}{27}\sigma^2)}{\sigma\sqrt{\frac{5}{27}},3}.
+\]
 \end{enumerate}
